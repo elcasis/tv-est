@@ -1,0 +1,2980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Super Suma de Estrellas TV! ⭐ Juego de Lógica Matemática para Niños (9 Años)</title>
+
+    <!-- ==========================================================================
+         ESTILOS CSS OPTIMIZADOS PARA SMART TV LG (webOS / Navegador TV 16:9)
+         --------------------------------------------------------------------------
+         - Diseño panorámico 100vw x 100vh sin barras de scroll para jugar desde el sofá.
+         - Escalado dinámico mediante variables CSS (--cell-size, --star-size) para que
+           los 7 tamaños de cuadrícula (2x2, 3x2, 3x3, 3x4, 4x4, 4x5 y 5x5) encajen
+           siempre a la perfección en pantallas FullHD (1080p) y UltraHD (4K).
+         - Efectos :hover y :focus de alto contraste pensados para el puntero del
+           mando LG Magic Remote y las flechas de dirección del mando.
+         - Sin campos <input> de texto para evitar que se abra el teclado virtual en TV.
+         ========================================================================== -->
+    <style>
+        :root {
+            --bg-deep: #090d1e;
+            --bg-space: #17153b;
+            --bg-nebula: #2e1a47;
+            --panel-bg: rgba(15, 23, 42, 0.78);
+            --panel-border: rgba(148, 163, 184, 0.32);
+            --gold: #facc15;
+            --gold-bright: #fef08a;
+            --gold-glow: rgba(250, 204, 21, 0.55);
+            --cyan: #38bdf8;
+            --cyan-glow: rgba(56, 189, 248, 0.5);
+            --green: #22c55e;
+            --green-glow: rgba(34, 197, 94, 0.55);
+            --red: #ef4444;
+            --orange: #fb923c;
+            --purple: #c084fc;
+            --cell-size: 13vh;
+            --star-size: 2.8vh;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial Rounded MT Bold', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at 18% 18%, #311042 0%, #17153b 48%, #090d1e 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            font-size: 2.1vh;
+        }
+
+        /* ==========================================================================
+           CABECERA SUPERIOR PANORÁMICA (BARRA DE TELEVISIÓN)
+           ========================================================================== */
+        header {
+            height: 8.5vh;
+            background: rgba(9, 13, 30, 0.82);
+            border-bottom: 0.3vh solid rgba(250, 204, 21, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2.4vw;
+            box-shadow: 0 0.5vh 2vh rgba(0, 0, 0, 0.5);
+            z-index: 30;
+        }
+
+        .tv-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.9vw;
+            font-size: 3.2vh;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: 0 0.35vh 0 rgba(0, 0, 0, 0.7);
+            letter-spacing: 0.03em;
+        }
+
+        .brand-star-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 4.6vh;
+            height: 4.6vh;
+            background: linear-gradient(135deg, #fef08a 0%, #eab308 100%);
+            color: #0f172a;
+            border-radius: 1.2vh;
+            border: 0.3vh solid #ffffff;
+            font-size: 2.8vh;
+            box-shadow: 0 0 1.6vh var(--gold-glow);
+        }
+
+        .header-center-pills {
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .status-pill {
+            background: rgba(30, 41, 59, 0.9);
+            border: 0.28vh solid var(--cyan);
+            color: #e0f2fe;
+            padding: 0.65vh 1.4vw;
+            border-radius: 3vh;
+            font-size: 2.05vh;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .status-pill.gold-pill {
+            border-color: var(--gold);
+            color: var(--gold-bright);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+        }
+
+        .tv-top-btn {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border: 0.28vh solid rgba(255, 255, 255, 0.32);
+            border-radius: 1.3vh;
+            padding: 0.75vh 1.2vw;
+            font-size: 2vh;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        .tv-top-btn:hover,
+        .tv-top-btn:focus {
+            background: var(--gold);
+            color: #0f172a;
+            border-color: #ffffff;
+            transform: scale(1.06);
+            box-shadow: 0 0 1.8vh var(--gold-glow);
+        }
+
+        /* ==========================================================================
+           CONTENEDOR PRINCIPAL DE PANTALLAS (MENÚ / JUEGO / TUTORIAL / DIPLOMA)
+           ========================================================================== */
+        main {
+            flex: 1;
+            width: 100vw;
+            height: 91.5vh;
+            padding: 1.6vh 2.4vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .screen.active-screen {
+            display: flex;
+            animation: fadeInScreen 0.28s ease-out;
+        }
+
+        @keyframes fadeInScreen {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .tv-panel {
+            background: var(--panel-bg);
+            border: 0.3vh solid var(--panel-border);
+            border-radius: 2.4vh;
+            padding: 2vh 1.8vw;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1vh 3vh rgba(0, 0, 0, 0.48);
+        }
+
+        /* ==========================================================================
+           PANTALLA 1: MENÚ DE SELECCIÓN DE TAMAÑO (7 TAMAÑOS x 6 EJERCICIOS = 42)
+           ========================================================================== */
+        #menuScreen {
+            gap: 1.8vw;
+            align-items: stretch;
+        }
+
+        .menu-left-col {
+            flex: 1.45;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.4vh;
+        }
+
+        .menu-right-col {
+            flex: 0.95;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.4vh;
+            background: linear-gradient(160deg, rgba(49, 16, 66, 0.78) 0%, rgba(15, 23, 42, 0.9) 100%);
+        }
+
+        .section-title {
+            font-size: 2.25vh;
+            font-weight: 900;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.9vh;
+        }
+
+        /* Botonera de los 7 tamaños: 2x2, 3x2, 3x3, 3x4, 4x4, 4x5 y 5x5 */
+        .sizes-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.7vw;
+        }
+
+        .size-card-btn {
+            background: rgba(15, 23, 42, 0.85);
+            color: #ffffff;
+            border: 0.3vh solid rgba(255, 255, 255, 0.24);
+            border-radius: 1.6vh;
+            padding: 1.1vh 0.4vw;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35vh;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        .size-card-btn:hover,
+        .size-card-btn:focus {
+            transform: translateY(-0.4vh) scale(1.04);
+            border-color: #ffffff;
+            box-shadow: 0 0 1.8vh var(--cyan-glow);
+        }
+
+        .size-card-btn.selected {
+            background: linear-gradient(180deg, #facc15 0%, #ca8a04 100%);
+            color: #0f172a;
+            border-color: #ffffff;
+            box-shadow: 0 0 2.2vh var(--gold-glow);
+        }
+
+        .size-dim-text {
+            font-size: 2.5vh;
+            font-weight: 900;
+        }
+
+        .size-diff-label {
+            font-size: 1.45vh;
+            font-weight: 800;
+            opacity: 0.9;
+        }
+
+        .size-progress-pill {
+            font-size: 1.45vh;
+            font-weight: 900;
+            background: rgba(0, 0, 0, 0.35);
+            color: #ffffff;
+            padding: 0.2vh 0.5vw;
+            border-radius: 1vh;
+            margin-top: 0.2vh;
+        }
+
+        .size-card-btn.selected .size-progress-pill {
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--gold);
+        }
+
+        /* Cuadrícula de los 6 ejercicios del tamaño seleccionado */
+        .exercises-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 0.9vw;
+            flex: 1;
+        }
+
+        .exercise-card-btn {
+            background: rgba(30, 41, 59, 0.82);
+            color: #ffffff;
+            border: 0.3vh solid rgba(148, 163, 184, 0.3);
+            border-radius: 1.8vh;
+            padding: 1.1vh 1vw;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+            text-align: left;
+            transition: all 0.16s ease;
+            outline: none;
+            position: relative;
+        }
+
+        .exercise-card-btn:hover,
+        .exercise-card-btn:focus {
+            transform: scale(1.03);
+            border-color: var(--gold);
+            background: rgba(51, 65, 85, 0.92);
+            box-shadow: 0 0 2vh var(--gold-glow);
+        }
+
+        .exercise-card-btn.selected-exercise {
+            border-color: var(--cyan);
+            background: linear-gradient(145deg, rgba(14, 116, 144, 0.55) 0%, rgba(15, 23, 42, 0.92) 100%);
+            box-shadow: 0 0 1.8vh var(--cyan-glow);
+        }
+
+        .exercise-card-btn.completed-exercise {
+            border-color: var(--green);
+        }
+
+        .ex-top-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 900;
+            font-size: 2.05vh;
+            color: var(--gold-bright);
+        }
+
+        .ex-stars-earned {
+            font-size: 2vh;
+            letter-spacing: 0.1em;
+        }
+
+        .ex-clue-info {
+            font-size: 1.65vh;
+            color: #cbd5e1;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .ex-play-tag {
+            align-self: flex-end;
+            font-size: 1.55vh;
+            font-weight: 900;
+            color: var(--cyan);
+            background: rgba(15, 23, 42, 0.75);
+            padding: 0.25vh 0.65vw;
+            border-radius: 0.9vh;
+        }
+
+        /* Tarjeta de perfil del jugador en el menú */
+        .hero-selector-box {
+            background: rgba(15, 23, 42, 0.75);
+            border: 0.28vh solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.8vh;
+            padding: 1.1vh 1.2vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .avatar-big-btn {
+            width: 7.4vh;
+            height: 7.4vh;
+            font-size: 4.4vh;
+            border-radius: 1.6vh;
+            background: rgba(250, 204, 21, 0.18);
+            border: 0.3vh solid var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        .avatar-big-btn:hover,
+        .avatar-big-btn:focus {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 2vh var(--gold);
+        }
+
+        /* Mini demostración visual del Puzzle 7 de la ficha */
+        .worksheet-demo-box {
+            background: #ffffff;
+            color: #0f172a;
+            border-radius: 1.8vh;
+            padding: 1.2vh 1.2vw;
+            border: 0.4vh solid var(--gold);
+            box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.45);
+        }
+
+        .big-play-btn {
+            width: 100%;
+            background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+            color: #ffffff;
+            border: 0.35vh solid #ffffff;
+            border-radius: 2vh;
+            padding: 1.6vh 1.5vw;
+            font-size: 2.7vh;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 0.8vh 2.5vh rgba(34, 197, 94, 0.5);
+            transition: all 0.16s ease;
+            outline: none;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .big-play-btn:hover,
+        .big-play-btn:focus {
+            transform: scale(1.03);
+            background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+            box-shadow: 0 0 3vh #4ade80;
+        }
+
+        /* ==========================================================================
+           PANTALLA 2: PANTALLA DE JUEGO (PANEL LATERAL + TABLERO DE ESTRELLAS)
+           ========================================================================== */
+        #gameScreen {
+            gap: 1.8vw;
+            align-items: stretch;
+        }
+
+        .game-sidebar {
+            width: 27vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.2vh;
+        }
+
+        .player-status-card {
+            background: rgba(15, 23, 42, 0.88);
+            border: 0.3vh solid var(--gold);
+            border-radius: 2vh;
+            padding: 1.3vh 1.2vw;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8vh;
+        }
+
+        .player-row-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .player-Identity {
+            display: flex;
+            align-items: center;
+            gap: 0.7vw;
+        }
+
+        .player-avatar-icon {
+            font-size: 4.2vh;
+            background: rgba(255, 255, 255, 0.1);
+            width: 6.2vh;
+            height: 6.2vh;
+            border-radius: 1.4vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0.25vh solid rgba(255, 255, 255, 0.3);
+        }
+
+        .score-number-big {
+            font-size: 3.4vh;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .stats-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5vw;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 0.7vh 0.5vw;
+            border-radius: 1.2vh;
+        }
+
+        .stat-label {
+            font-size: 1.4vh;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .stat-val {
+            font-size: 2vh;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        /* Herramientas de acción para el niño */
+        .tools-box {
+            background: rgba(15, 23, 42, 0.88);
+            border: 0.3vh solid rgba(255, 255, 255, 0.22);
+            border-radius: 2vh;
+            padding: 1.3vh 1.2vw;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9vh;
+        }
+
+        .tool-mode-btn {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.9);
+            color: #ffffff;
+            border: 0.32vh solid rgba(255, 255, 255, 0.28);
+            border-radius: 1.6vh;
+            padding: 1.15vh 1vw;
+            font-size: 2.05vh;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        .tool-mode-btn:hover,
+        .tool-mode-btn:focus {
+            transform: scale(1.03);
+            border-color: #ffffff;
+        }
+
+        .tool-mode-btn.active-select-tool {
+            background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+            border-color: #ffffff;
+            box-shadow: 0 0 2vh var(--green-glow);
+        }
+
+        .tool-mode-btn.active-discard-tool {
+            background: linear-gradient(90deg, #dc2626 0%, #991b1b 100%);
+            border-color: #ffffff;
+            box-shadow: 0 0 2vh rgba(239, 68, 68, 0.55);
+        }
+
+        .action-btn {
+            width: 100%;
+            background: rgba(56, 189, 248, 0.18);
+            color: #e0f2fe;
+            border: 0.3vh solid var(--cyan);
+            border-radius: 1.5vh;
+            padding: 1.05vh 1vw;
+            font-size: 1.95vh;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5vw;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        .action-btn:hover,
+        .action-btn:focus {
+            background: var(--cyan);
+            color: #0f172a;
+            border-color: #ffffff;
+            transform: scale(1.03);
+            box-shadow: 0 0 1.8vh var(--cyan-glow);
+        }
+
+        .action-btn.hint-gold-btn {
+            background: rgba(250, 204, 21, 0.2);
+            border-color: var(--gold);
+            color: var(--gold-bright);
+        }
+
+        .action-btn.hint-gold-btn:hover,
+        .action-btn.hint-gold-btn:focus {
+            background: var(--gold);
+            color: #0f172a;
+            box-shadow: 0 0 2vh var(--gold-glow);
+        }
+
+        /* Navegador rápido de los 6 ejercicios del tamaño actual */
+        .quick-ex-bar {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.4vw;
+        }
+
+        .quick-ex-pill {
+            background: rgba(30, 41, 59, 0.9);
+            color: #cbd5e1;
+            border: 0.25vh solid rgba(255, 255, 255, 0.22);
+            border-radius: 1.1vh;
+            padding: 0.65vh 0;
+            font-size: 1.8vh;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        .quick-ex-pill:hover,
+        .quick-ex-pill:focus {
+            border-color: #ffffff;
+            transform: scale(1.07);
+        }
+
+        .quick-ex-pill.current-pill {
+            background: var(--gold);
+            color: #0f172a;
+            border-color: #ffffff;
+        }
+
+        .quick-ex-pill.done-pill {
+            border-color: var(--green);
+            color: #86efac;
+        }
+
+        /* ==========================================================================
+           ESCENARIO CENTRAL DEL TABLERO DE SUMA DE ESTRELLAS
+           ========================================================================== */
+        .game-board-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .stage-top-bar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.78);
+            border: 0.25vh solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.6vh;
+            padding: 0.8vh 1.5vw;
+        }
+
+        .board-title-banner {
+            font-size: 2.3vh;
+            font-weight: 900;
+            color: var(--gold-bright);
+        }
+
+        .unequivocal-badge {
+            background: rgba(34, 197, 94, 0.2);
+            border: 0.25vh solid var(--green);
+            color: #bbf7d0;
+            padding: 0.45vh 1vw;
+            border-radius: 2vh;
+            font-size: 1.75vh;
+            font-weight: 800;
+        }
+
+        /* Contenedor de la tabla estilo Ficha Escolar Mejorada */
+        .star-puzzle-wrapper {
+            background: #f8fafc;
+            border: 0.6vh solid #1e293b;
+            border-radius: 2.4vh;
+            padding: 1.6vh 1.8vw;
+            box-shadow: 0 1.4vh 4vh rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .star-puzzle-grid {
+            display: grid;
+            gap: 0.65vh;
+            align-items: center;
+            justify-items: center;
+        }
+
+        /* Celda de esquina superior izquierda (etiqueta Suma) */
+        .corner-label-cell {
+            width: var(--cell-size);
+            height: calc(var(--cell-size) * 0.72);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: calc(var(--cell-size) * 0.15);
+            font-weight: 900;
+            color: #475569;
+            text-align: center;
+            line-height: 1.15;
+        }
+
+        /* Cabeceras de suma objetivo (Filas a la izquierda y Columnas arriba) */
+        .target-header-btn {
+            background: #1e293b;
+            color: #ffffff;
+            border: 0.35vh solid #334155;
+            border-radius: 1.5vh;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.16s ease;
+            outline: none;
+            position: relative;
+            box-shadow: 0 0.4vh 1vh rgba(0, 0, 0, 0.2);
+        }
+
+        .target-header-btn.col-target-btn {
+            width: var(--cell-size);
+            height: calc(var(--cell-size) * 0.72);
+        }
+
+        .target-header-btn.row-target-btn {
+            width: calc(var(--cell-size) * 0.85);
+            height: var(--cell-size);
+        }
+
+        .target-header-btn:hover,
+        .target-header-btn:focus {
+            transform: scale(1.07);
+            border-color: var(--cyan);
+            box-shadow: 0 0 1.8vh var(--cyan-glow);
+        }
+
+        /* Cuando la suma ya es exacta y TODAS las incorrectas están marcadas con 0 */
+        .target-header-btn.target-complete {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            border-color: #4ade80;
+            box-shadow: 0 0 1.5vh var(--green-glow);
+        }
+
+        /* Cuando ya se alcanzó la suma pero aún falta marcar las incorrectas con 0 */
+        .target-header-btn.target-needs-zeros {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-color: #7dd3fc;
+            box-shadow: 0 0 1.4vh var(--cyan-glow);
+        }
+
+        /* Cuando se ilumina como pista de fila/columna inequívoca */
+        .target-header-btn.target-hint-glow {
+            background: linear-gradient(135deg, #facc15 0%, #ea580c 100%);
+            color: #0f172a;
+            border-color: #0f172a;
+            animation: pulseTargetHint 0.9s infinite alternate;
+        }
+
+        @keyframes pulseTargetHint {
+            from { transform: scale(1.02); box-shadow: 0 0 1.5vh #facc15; }
+            to { transform: scale(1.11); box-shadow: 0 0 3vh #ea580c; }
+        }
+
+        .target-main-num {
+            font-size: calc(var(--cell-size) * 0.34);
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .target-sub-progress {
+            font-size: calc(var(--cell-size) * 0.13);
+            font-weight: 800;
+            color: #94a3b8;
+            margin-top: 0.25vh;
+        }
+
+        .target-header-btn.target-complete .target-sub-progress {
+            color: #dcfce7;
+        }
+
+        .target-header-btn.target-needs-zeros .target-sub-progress {
+            color: #fef08a;
+        }
+
+        .target-header-btn.target-hint-glow .target-sub-progress {
+            color: #0f172a;
+        }
+
+        /* ==========================================================================
+           CASILLAS DEL TABLERO CON ESTRELLAS (PATRÓN DADO DE 1 A 5 ESTRELLAS)
+           ========================================================================== */
+        .star-cell-btn {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            background: #ffffff;
+            border: 0.35vh solid #1e293b;
+            border-radius: 1.4vh;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            outline: none;
+            padding: calc(var(--cell-size) * 0.11);
+        }
+
+        .star-cell-btn:hover,
+        .star-cell-btn:focus {
+            transform: scale(1.06);
+            border-color: #0284c7;
+            box-shadow: 0 0 2vh rgba(2, 132, 199, 0.55);
+            z-index: 5;
+        }
+
+        .star-cell-btn.line-highlight {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .star-cell-btn.hint-cell-glow {
+            background: #fef9c3;
+            border-color: #eab308;
+            box-shadow: 0 0 2vh rgba(234, 179, 8, 0.65);
+        }
+
+        /* Efecto de sacudida cuando se intenta marcar con la herramienta equivocada */
+        .star-cell-btn.cell-error-shake {
+            background: #fee2e2;
+            border-color: #dc2626;
+            animation: shakeErrorCell 0.45s ease;
+        }
+
+        @keyframes shakeErrorCell {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-0.7vh); }
+            50% { transform: translateX(0.7vh); }
+            75% { transform: translateX(-0.5vh); }
+        }
+
+        /* Estado 1: Casilla ELEGIDA para la suma (Acierto) */
+        .star-cell-btn.cell-selected {
+            background: linear-gradient(145deg, #dcfce7 0%, #bbf7d0 100%);
+            border: 0.45vh solid #16a34a;
+            box-shadow: inset 0 0 1.5vh rgba(22, 163, 74, 0.25);
+        }
+
+        /* Estado 2: Casilla DESCARTADA (Valor 0, como el '0' en la esquina de la ficha) */
+        .star-cell-btn.cell-discarded {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+            opacity: 0.62;
+        }
+
+        .star-cell-btn.cell-discarded .pips-container {
+            filter: grayscale(85%);
+            opacity: 0.42;
+        }
+
+        /* Distribución interna 3x3 para colocar de 1 a 5 estrellas igual que en la foto */
+        .pips-container {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            align-items: center;
+            justify-items: center;
+            pointer-events: none;
+        }
+
+        .star-pip {
+            font-size: var(--star-size);
+            line-height: 1;
+            filter: drop-shadow(0 0.18vh 0.15vh rgba(0, 0, 0, 0.28));
+            transition: transform 0.2s ease;
+        }
+
+        .star-cell-btn.cell-selected .star-pip {
+            transform: scale(1.12);
+            filter: drop-shadow(0 0.2vh 0.4vh rgba(234, 179, 8, 0.75));
+        }
+
+        /* Insignia numérica opcional en la esquina superior izquierda (1..5) */
+        .cell-num-badge {
+            position: absolute;
+            top: 0.35vh;
+            left: 0.45vh;
+            background: #1e293b;
+            color: #facc15;
+            font-size: calc(var(--cell-size) * 0.155);
+            font-weight: 900;
+            width: calc(var(--cell-size) * 0.23);
+            height: calc(var(--cell-size) * 0.23);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        /* Marca en la esquina inferior derecha igual que las anotaciones a lápiz de la foto */
+        .cell-corner-mark {
+            position: absolute;
+            bottom: 0.3vh;
+            right: 0.45vh;
+            font-size: calc(var(--cell-size) * 0.19);
+            font-weight: 900;
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        .mark-selected {
+            color: #15803d;
+        }
+
+        .mark-zero {
+            color: #dc2626;
+            background: rgba(254, 226, 226, 0.92);
+            border: 0.2vh solid #ef4444;
+            border-radius: 50%;
+            width: calc(var(--cell-size) * 0.25);
+            height: calc(var(--cell-size) * 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Barra inferior de mensajes y explicación paso a paso */
+        .stage-feedback-bar {
+            width: 100%;
+            min-height: 8.2vh;
+            background: rgba(15, 23, 42, 0.9);
+            border: 0.3vh solid rgba(255, 255, 255, 0.25);
+            border-radius: 1.8vh;
+            padding: 1vh 1.6vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1vw;
+            font-size: 2.05vh;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+
+        .stage-feedback-bar.fb-good {
+            border-color: var(--green);
+            background: rgba(20, 83, 45, 0.88);
+            color: #dcfce7;
+        }
+
+        .stage-feedback-bar.fb-bad {
+            border-color: var(--red);
+            background: rgba(127, 29, 29, 0.9);
+            color: #fee2e2;
+        }
+
+        .stage-feedback-bar.fb-hint {
+            border-color: var(--gold);
+            background: rgba(113, 63, 18, 0.92);
+            color: #fef9c3;
+        }
+
+        /* ==========================================================================
+           MODAL DE VICTORIA AL COMPLETAR UN EJERCICIO
+           ========================================================================== */
+        .victory-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(9, 13, 30, 0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 2.4vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3vh 3vw;
+            text-align: center;
+            z-index: 25;
+            border: 0.4vh solid var(--gold);
+        }
+
+        .victory-overlay.show-victory {
+            display: flex;
+            animation: fadeInScreen 0.25s ease-out;
+        }
+
+        .victory-stars-big {
+            font-size: 6.5vh;
+            margin-bottom: 1vh;
+            letter-spacing: 0.15em;
+            filter: drop-shadow(0 0 2vh var(--gold));
+        }
+
+        .steps-chain-box {
+            background: rgba(30, 41, 59, 0.9);
+            border: 0.25vh solid var(--cyan);
+            border-radius: 1.6vh;
+            padding: 1.2vh 1.6vw;
+            margin: 1.5vh 0;
+            max-width: 54vw;
+            font-size: 1.85vh;
+            color: #e0f2fe;
+            line-height: 1.45;
+        }
+
+        /* ==========================================================================
+           PANTALLA 3: TUTORIAL VISUAL PARA NIÑOS DE 9 AÑOS
+           ========================================================================== */
+        #tutorialScreen {
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.6vh;
+        }
+
+        .tutorial-cards-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5vw;
+            flex: 1;
+        }
+
+        .tutorial-step-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 0.3vh solid rgba(255, 255, 255, 0.22);
+            border-radius: 2.2vh;
+            padding: 2.2vh 1.6vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            gap: 1.2vh;
+        }
+
+        .step-badge-num {
+            width: 5.8vh;
+            height: 5.8vh;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #0f172a;
+            font-size: 3vh;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+         CABECERA SUPERIOR FIJA (OPTIMIZADA PARA SMART TV LG)
+         ========================================================================== -->
+    <header>
+        <div class="tv-brand">
+            <span class="brand-star-badge">⭐</span>
+            <span>¡SUPER SUMA DE ESTRELLAS TV!</span>
+        </div>
+
+        <div class="header-center-pills">
+            <div class="status-pill" id="headerModePill">📐 Elige Tamaño (2x2 a 5x5)</div>
+            <div class="status-pill gold-pill" id="headerProgressPill">🏆 0 / 42 Ejercicios Resueltos</div>
+        </div>
+
+        <div class="header-actions">
+            <button type="button" class="tv-top-btn" id="btnToggleNumbers" onclick="toggleNumberBadges()">
+                🔢 Números: NO
+            </button>
+            <button type="button" class="tv-top-btn" id="btnToggleSound" onclick="toggleSound()">
+                🔊 Sonido: SÍ
+            </button>
+            <button type="button" class="tv-top-btn" onclick="openTutorialScreen()">
+                ❓ Cómo Jugar
+            </button>
+            <button type="button" class="tv-top-btn" onclick="goToMainMenu()">
+                🏠 Menú Tamaño
+            </button>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         CONTENEDOR PRINCIPAL DE PANTALLAS
+         ========================================================================== -->
+    <main>
+
+        <!-- ======================================================================
+             PANTALLA 1: MENÚ DE SELECCIÓN DE TAMAÑOS Y EJERCICIOS (42 RETOS)
+             ====================================================================== -->
+        <section id="menuScreen" class="screen active-screen">
+
+            <!-- Columna Izquierda: Selector de los 7 tamaños y sus 6 ejercicios -->
+            <div class="tv-panel menu-left-col">
+                <div>
+                    <div class="section-title">
+                        <span>1️⃣ Elige el Tamaño del Cuadrado que Quieres Resolver:</span>
+                        <span id="selectedSizeSubtitle" style="color: var(--cyan); font-size: 1.9vh;">Tamaño 3x4 (Ficha Original)</span>
+                    </div>
+                    <div class="sizes-grid" id="sizesSelectorGrid">
+                        <!-- Se genera dinámicamente con los 7 tamaños: 2x2, 3x2, 3x3, 3x4, 4x4, 4x5, 5x5 -->
+                    </div>
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="section-title">
+                        <span id="exercisesSectionTitle">2️⃣ Elige uno de los 6 Ejercicios (Con Fila Inequívoca):</span>
+                        <span style="font-size: 1.7vh; color: #cbd5e1;">¡Todos se resuelven razonando sin adivinar!</span>
+                    </div>
+                    <div class="exercises-grid" id="exercisesSelectorGrid">
+                        <!-- Se generan las 6 tarjetas de ejercicio del tamaño activo -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Avatar del Jugador, Regla de Oro de la Fila Inequívoca y Botón Jugar -->
+            <div class="tv-panel menu-right-col">
+                <div>
+                    <div class="section-title">
+                        <span>🧑‍🚀 Tu Detective Espacial (1 Jugador)</span>
+                    </div>
+                    <div class="hero-selector-box">
+                        <div>
+                            <div style="font-size: 2.3vh; font-weight: 900; color: var(--gold);" id="menuRankTitle">
+                                Rango: Cadete Estelar
+                            </div>
+                            <div style="font-size: 1.75vh; color: #cbd5e1; margin-top: 0.3vh;">
+                                Pulsa el icono para cambiar de personaje 👉
+                            </div>
+                            <div style="font-size: 1.85vh; font-weight: 800; color: var(--cyan); margin-top: 0.5vh;" id="menuTotalScoreText">
+                                Puntuación Total: 0 pts
+                            </div>
+                        </div>
+                        <button type="button" class="avatar-big-btn" id="menuAvatarBtn" onclick="cyclePlayerAvatar()" title="Cambiar personaje">
+                            🚀
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Explicación visual del secreto matemático ("Fila Inequívoca") -->
+                <div class="worksheet-demo-box">
+                    <div style="font-size: 2vh; font-weight: 900; color: #1e293b; margin-bottom: 0.6vh;">
+                        🔑 EL SECRETO DE LOS 42 PUZZLES:
+                    </div>
+                    <p style="font-size: 1.75vh; color: #334155; font-weight: 700; line-height: 1.38;">
+                        En cada ejercicio <strong>siempre hay una fila que solo puede dar la suma de una única forma inequívoca</strong>.
+                    </p>
+                    <div style="background: #fef9c3; border: 0.25vh solid #eab308; border-radius: 1.2vh; padding: 0.8vh 0.9vw; margin-top: 0.8vh; font-size: 1.7vh; font-weight: 800; color: #713f12;">
+                        📌 Ejemplo (Puzzle 7 de 3x4):<br>
+                        La <strong>Fila 2 pide sumar 8</strong> con <strong>[⭐1, ⭐2, ⭐4, ⭐5]</strong>.<br>
+                        ¡Solo <strong>1 + 2 + 5 = 8</strong>! Así descubres que el <strong>4 no vale (0)</strong> y a partir de esa fila construyes todas las demás.
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.9vh;">
+                    <button type="button" class="big-play-btn" id="btnStartSelectedExercise" onclick="startSelectedExercise()">
+                        🚀 ¡JUGAR EJERCICIO SELECCIONADO!
+                    </button>
+                    <div style="display: flex; gap: 0.8vw;">
+                        <button type="button" class="action-btn" style="flex: 1;" onclick="openTutorialScreen()">
+                            📖 Ver Guía Paso a Paso
+                        </button>
+                        <button type="button" class="action-btn" style="flex: 1; border-color: #f87171; color: #fecaca;" onclick="resetAllProgress()">
+                            🗑️ Borrar Récords
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PANTALLA 2: PANTALLA DE JUEGO (1 JUGADOR)
+             ====================================================================== -->
+        <section id="gameScreen" class="screen">
+
+            <!-- Panel Lateral Izquierdo: Jugador, Herramientas y Selector Rápido 1..6 -->
+            <aside class="game-sidebar">
+                <div class="player-status-card">
+                    <div class="player-row-top">
+                        <div class="player-Identity">
+                            <div class="player-avatar-icon" id="gameAvatarIcon">🚀</div>
+                            <div>
+                                <div style="font-size: 2.05vh; font-weight: 900; color: #ffffff;">Detective Estelar</div>
+                                <div style="font-size: 1.55vh; color: var(--cyan); font-weight: 800;" id="gameRankLabel">Cadete Estelar</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.35vh; color: #cbd5e1; font-weight: 700;">PUNTOS</div>
+                            <div class="score-number-big" id="gameTotalScore">0</div>
+                        </div>
+                    </div>
+
+                    <div class="stats-mini-grid">
+                        <div>
+                            <div class="stat-label">RACHA</div>
+                            <div class="stat-val" id="statStreak" style="color: var(--gold);">x1 🔥</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">FALLOS</div>
+                            <div class="stat-val" id="statMistakes" style="color: #86efac;">0</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">FALTAN</div>
+                            <div class="stat-val" id="statRemaining">0 ⭐</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Herramientas para elegir o descartar casillas -->
+                <div class="tools-box">
+                    <div style="font-size: 1.75vh; font-weight: 900; color: var(--gold); text-transform: uppercase;">
+                        🛠️ Herramienta del Mando:
+                    </div>
+
+                    <button type="button" class="tool-mode-btn active-select-tool" id="btnToolSelect" onclick="setInteractionTool('select')">
+                        <span>⭐ Sumar Casilla (Sí Vale)</span>
+                        <span style="font-size: 1.6vh; background: rgba(0,0,0,0.3); padding: 0.25vh 0.6vw; border-radius: 0.8vh;">+100 pts</span>
+                    </button>
+
+                    <button type="button" class="tool-mode-btn" id="btnToolDiscard" onclick="setInteractionTool('discard')">
+                        <span>🚫 Marcar Incorrecta (No Vale · 0)</span>
+                        <span style="font-size: 1.6vh; background: rgba(0,0,0,0.3); padding: 0.25vh 0.6vw; border-radius: 0.8vh;">+100 pts</span>
+                    </button>
+
+                    <button type="button" class="action-btn hint-gold-btn" onclick="giveUnequivocalHint()">
+                        💡 Pista: ¿Qué Fila o Columna es Inequívoca?
+                    </button>
+
+                    <button type="button" class="action-btn" onclick="restartCurrentExercise()">
+                        🔄 Reiniciar este Ejercicio
+                    </button>
+                </div>
+
+                <!-- Navegador rápido entre los 6 ejercicios del tamaño actual -->
+                <div class="tools-box" style="padding: 1.1vh 1.2vw;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 1.65vh; font-weight: 900; color: var(--cyan);" id="sidebarSizeLabel">
+                            EJERCICIOS DE 3x4:
+                        </span>
+                        <button type="button" onclick="goToMainMenu()" style="background: none; border: none; color: var(--gold); font-size: 1.6vh; font-weight: 900; cursor: pointer; text-decoration: underline;">
+                            Cambiar Tamaño
+                        </button>
+                    </div>
+                    <div class="quick-ex-bar" id="quickExNav">
+                        <!-- 6 botones rápidos (#1 a #6) -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Escenario Derecho: Tablero de Estrellas + Barra de Ayuda -->
+            <div class="tv-panel game-board-stage">
+
+                <!-- Barra superior del escenario -->
+                <div class="stage-top-bar">
+                    <div class="board-title-banner" id="activeBoardTitle">
+                        Tamaño 3x4 · Ejercicio #1 (Puzzle 7 de la Ficha)
+                    </div>
+                    <div class="unequivocal-badge" id="startingRowBadge">
+                        🔑 Empieza buscando la Fila de suma única
+                    </div>
+                </div>
+
+                <!-- Tablero Central con Cabeceras de Filas/Columnas y Estrellas -->
+                <div class="star-puzzle-wrapper">
+                    <div id="starPuzzleGrid" class="star-puzzle-grid">
+                        <!-- Generado dinámicamente por renderStarBoard() -->
+                    </div>
+                </div>
+
+                <!-- Barra inferior de retroalimentación pedagógica -->
+                <div class="stage-feedback-bar" id="feedbackBar">
+                    <span id="feedbackMessage">
+                        🔎 Busca primero la FILA que solo tenga UNA combinación posible para lograr su suma objetivo.
+                    </span>
+                    <button type="button" class="tv-top-btn" onclick="giveUnequivocalHint()" style="white-space: nowrap;">
+                        💡 Dame una Pista
+                    </button>
+                </div>
+
+                <!-- Modal de Celebración al Completar el Ejercicio -->
+                <div class="victory-overlay" id="victoryOverlay">
+                    <div class="victory-stars-big" id="victoryStarsDisplay">⭐⭐⭐</div>
+                    <h2 style="font-size: 4vh; font-weight: 900; color: var(--gold);" id="victoryTitle">
+                        ¡EJERCICIO COMPLETADO!
+                    </h2>
+                    <p style="font-size: 2.3vh; color: #e2e8f0; margin-top: 0.6vh; font-weight: 700;" id="victorySummaryText">
+                        ¡Has deducido todas las filas y columnas perfectamente!
+                    </p>
+
+                    <div class="steps-chain-box" id="victoryStepsChain">
+                        <!-- Muestra la cadena de deducción paso a paso que resolvía el tablero -->
+                    </div>
+
+                    <div style="display: flex; gap: 1.5vw; margin-top: 1.2vh;">
+                        <button type="button" class="big-play-btn" style="width: auto; padding: 1.4vh 2.4vw;" id="btnNextExercise" onclick="goToNextExercise()">
+                            ➡️ Siguiente Ejercicio
+                        </button>
+                        <button type="button" class="action-btn" style="width: auto; padding: 1.4vh 2vw; font-size: 2.2vh;" onclick="goToMainMenu()">
+                            📐 Elegir Otro Tamaño
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             PANTALLA 3: TUTORIAL PASO A PASO PARA NIÑOS DE 9 AÑOS
+             ====================================================================== -->
+        <section id="tutorialScreen" class="screen">
+            <div class="tv-panel" style="width: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 3.3vh; color: var(--gold); font-weight: 900;">
+                        🎓 ¿Cómo se juega a Super Suma de Estrellas?
+                    </h2>
+                    <button type="button" class="tv-top-btn" onclick="goToMainMenu()">
+                        ✖️ Volver al Menú
+                    </button>
+                </div>
+
+                <div class="tutorial-cards-row" style="margin: 2vh 0;">
+                    <div class="tutorial-step-card">
+                        <div class="step-badge-num">1</div>
+                        <h3 style="font-size: 2.5vh; color: var(--cyan);">Busca la Fila Inequívoca</h3>
+                        <p style="font-size: 2vh; color: #e2e8f0; line-height: 1.45;">
+                            Mira los números a la izquierda de cada fila. <strong>Siempre hay una fila</strong> cuyos cuadros de estrellas <strong>solo pueden sumarse de UNA única manera</strong> para dar ese resultado.
+                        </p>
+                        <div style="background: rgba(250, 204, 21, 0.15); border: 0.25vh solid var(--gold); border-radius: 1.4vh; padding: 1.2vh; font-size: 1.85vh; color: var(--gold-bright); font-weight: 800;">
+                            Ejemplo: Si la fila pide <strong>8</strong> y tiene <strong>[1, 2, 4, 5]</strong>, ¡solo <strong>1 + 2 + 5 = 8</strong>!
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step-card">
+                        <div class="step-badge-num">2</div>
+                        <h3 style="font-size: 2.5vh; color: var(--green);">Marca las que Valen y las Incorrectas (0)</h3>
+                        <p style="font-size: 2vh; color: #e2e8f0; line-height: 1.45;">
+                            Con <strong>⭐ Sumar Casilla (Sí Vale)</strong> elige las casillas que forman la suma. Y con <strong>🚫 Marcar Incorrecta (No Vale · 0)</strong> debes marcar todas las que NO son parte de la suma.
+                        </p>
+                        <div style="background: rgba(34, 197, 94, 0.15); border: 0.25vh solid var(--green); border-radius: 1.4vh; padding: 1.2vh; font-size: 1.85vh; color: #bbf7d0; font-weight: 800;">
+                            ⚠️ ¡IMPORTANTE! Para ganar el ejercicio debes marcar <strong>TODAS las casillas</strong>: tanto las correctas (<strong>✅</strong>) como las incorrectas (<strong>0</strong>).
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step-card">
+                        <div class="step-badge-num">3</div>
+                        <h3 style="font-size: 2.5vh; color: var(--purple);">Construye las Demás Filas y Columnas</h3>
+                        <p style="font-size: 2vh; color: #e2e8f0; line-height: 1.45;">
+                            Gracias a las casillas que ya elegiste o descartaste con <strong>0</strong>, ahora una <strong>columna o fila que antes tenía dudas pasará a tener una única suma posible</strong>. ¡Si te atascas, pulsa <strong>💡 Pista</strong>!
+                        </p>
+                        <div style="background: rgba(56, 189, 248, 0.15); border: 0.25vh solid var(--cyan); border-radius: 1.4vh; padding: 1.2vh; font-size: 1.85vh; color: #bae6fd; font-weight: 800;">
+                            Tienes 7 tamaños: <strong>2x2, 3x2, 3x3, 3x4, 4x4, 4x5 y 5x5</strong> (¡42 retos en total!).
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="button" class="big-play-btn" style="max-width: 42vw;" onclick="goToMainMenu()">
+                        🚀 ¡ENTENDIDO, VAMOS A JUGAR!
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================================================
+         CÓDIGO JAVASCRIPT DEL JUEGO (CON COMENTARIOS DETALLADOS DE CADA PARTE)
+         ========================================================================== -->
+    <script>
+        /* ========================================================================
+           1. BANCO DE 42 EJERCICIOS VERIFICADOS MATEMÁTICAMENTE
+           ------------------------------------------------------------------------
+           - 7 grados de dificultad / tamaños:
+             * '2x2' (6 ejercicios)
+             * '3x2' (6 ejercicios)
+             * '3x3' (6 ejercicios)
+             * '3x4' (6 ejercicios — el #1 es exactamente el "Puzzle 7" de la foto)
+             * '4x4' (6 ejercicios)
+             * '4x5' (6 ejercicios)
+             * '5x5' (6 ejercicios)
+           - En TODOS los ejercicios:
+             * `stars`: matriz con la cantidad de estrellas (1 a 5) de cada casilla.
+             * `solution`: matriz con 1 (casilla que forma parte de la suma) o 0 (descartada).
+             * `startRow`: número de la fila (1..R) que al empezar solo puede dar
+               su suma objetivo de una única forma inequívoca.
+             * `logicalSteps`: orden exacto de filas y columnas con el que se construye
+               toda la solución paso a paso a partir de la fila inequívoca inicial.
+           ======================================================================== */
+const PUZZLE_BANK = {
+    '2x2': [
+        {
+            id: '2x2-1',
+            title: 'Ejercicio #1',
+            rows: 2,
+            cols: 2,
+            rowTargets: [5, 3],
+            colTargets: [5, 3],
+            stars: [[5, 3], [3, 3]],
+            solution: [[1, 0], [0, 1]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 5)', 'Columna 1 (suma 5)', 'Fila 2 (suma 3)']
+        },
+        {
+            id: '2x2-2',
+            title: 'Ejercicio #2',
+            rows: 2,
+            cols: 2,
+            rowTargets: [2, 5],
+            colTargets: [5, 2],
+            stars: [[2, 2], [5, 1]],
+            solution: [[0, 1], [1, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 5)', 'Columna 1 (suma 5)', 'Fila 1 (suma 2)']
+        },
+        {
+            id: '2x2-3',
+            title: 'Ejercicio #3',
+            rows: 2,
+            cols: 2,
+            rowTargets: [2, 1],
+            colTargets: [2, 1],
+            stars: [[2, 1], [1, 1]],
+            solution: [[1, 0], [0, 1]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 2)', 'Columna 1 (suma 2)', 'Fila 2 (suma 1)']
+        },
+        {
+            id: '2x2-4',
+            title: 'Ejercicio #4',
+            rows: 2,
+            cols: 2,
+            rowTargets: [3, 3],
+            colTargets: [3, 3],
+            stars: [[3, 3], [4, 3]],
+            solution: [[1, 0], [0, 1]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 3)', 'Columna 1 (suma 3)', 'Fila 1 (suma 3)']
+        },
+        {
+            id: '2x2-5',
+            title: 'Ejercicio #5',
+            rows: 2,
+            cols: 2,
+            rowTargets: [2, 5],
+            colTargets: [5, 2],
+            stars: [[3, 2], [5, 5]],
+            solution: [[0, 1], [1, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 2)', 'Columna 1 (suma 5)', 'Fila 2 (suma 5)']
+        },
+        {
+            id: '2x2-6',
+            title: 'Ejercicio #6',
+            rows: 2,
+            cols: 2,
+            rowTargets: [2, 1],
+            colTargets: [1, 2],
+            stars: [[2, 2], [1, 2]],
+            solution: [[0, 1], [1, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 1)', 'Columna 1 (suma 1)', 'Fila 1 (suma 2)']
+        }
+    ],
+    '3x2': [
+        {
+            id: '3x2-1',
+            title: 'Ejercicio #1',
+            rows: 3,
+            cols: 2,
+            rowTargets: [5, 5, 4],
+            colTargets: [5, 9],
+            stars: [[1, 5], [5, 5], [4, 4]],
+            solution: [[0, 1], [1, 0], [0, 1]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 5)', 'Columna 1 (suma 5)', 'Fila 2 (suma 5)', 'Fila 3 (suma 4)']
+        },
+        {
+            id: '3x2-2',
+            title: 'Ejercicio #2',
+            rows: 3,
+            cols: 2,
+            rowTargets: [3, 3, 5],
+            colTargets: [8, 3],
+            stars: [[3, 3], [5, 3], [5, 5]],
+            solution: [[1, 0], [0, 1], [1, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 3)', 'Columna 1 (suma 8)', 'Fila 1 (suma 3)', 'Fila 3 (suma 5)']
+        },
+        {
+            id: '3x2-3',
+            title: 'Ejercicio #3',
+            rows: 3,
+            cols: 2,
+            rowTargets: [3, 4, 4],
+            colTargets: [7, 4],
+            stars: [[3, 3], [4, 4], [3, 4]],
+            solution: [[1, 0], [1, 0], [0, 1]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 4)', 'Columna 1 (suma 7)', 'Fila 1 (suma 3)', 'Fila 2 (suma 4)']
+        },
+        {
+            id: '3x2-4',
+            title: 'Ejercicio #4',
+            rows: 3,
+            cols: 2,
+            rowTargets: [5, 5, 1],
+            colTargets: [6, 5],
+            stars: [[1, 5], [5, 5], [1, 1]],
+            solution: [[0, 1], [1, 0], [1, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 5)', 'Columna 1 (suma 6)', 'Fila 2 (suma 5)', 'Fila 3 (suma 1)']
+        },
+        {
+            id: '3x2-5',
+            title: 'Ejercicio #5',
+            rows: 3,
+            cols: 2,
+            rowTargets: [5, 5, 4],
+            colTargets: [5, 9],
+            stars: [[5, 5], [5, 4], [4, 4]],
+            solution: [[0, 1], [1, 0], [0, 1]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 5)', 'Columna 1 (suma 5)', 'Fila 1 (suma 5)', 'Fila 3 (suma 4)']
+        },
+        {
+            id: '3x2-6',
+            title: 'Ejercicio #6',
+            rows: 3,
+            cols: 2,
+            rowTargets: [3, 1, 3],
+            colTargets: [3, 4],
+            stars: [[3, 3], [1, 1], [3, 4]],
+            solution: [[0, 1], [0, 1], [1, 0]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 3)', 'Columna 1 (suma 3)', 'Fila 1 (suma 3)', 'Fila 2 (suma 1)']
+        }
+    ],
+    '3x3': [
+        {
+            id: '3x3-1',
+            title: 'Ejercicio #1',
+            rows: 3,
+            cols: 3,
+            rowTargets: [6, 2, 4],
+            colTargets: [3, 4, 5],
+            stars: [[3, 4, 2], [2, 1, 2], [1, 3, 3]],
+            solution: [[0, 1, 1], [1, 0, 0], [1, 0, 1]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 6)', 'Columna 1 (suma 3)', 'Fila 2 (suma 2)', 'Columna 2 (suma 4)', 'Fila 3 (suma 4)']
+        },
+        {
+            id: '3x3-2',
+            title: 'Ejercicio #2',
+            rows: 3,
+            cols: 3,
+            rowTargets: [2, 4, 1],
+            colTargets: [4, 2, 1],
+            stars: [[1, 2, 2], [3, 2, 1], [1, 1, 1]],
+            solution: [[0, 1, 0], [1, 0, 1], [1, 0, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 4)', 'Columna 2 (suma 2)', 'Fila 1 (suma 2)', 'Columna 1 (suma 4)', 'Fila 3 (suma 1)']
+        },
+        {
+            id: '3x3-3',
+            title: 'Ejercicio #3',
+            rows: 3,
+            cols: 3,
+            rowTargets: [5, 7, 10],
+            colTargets: [5, 9, 8],
+            stars: [[5, 5, 5], [4, 4, 3], [1, 5, 5]],
+            solution: [[1, 0, 0], [0, 1, 1], [0, 1, 1]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 10)', 'Columna 1 (suma 5)', 'Fila 1 (suma 5)', 'Fila 2 (suma 7)']
+        },
+        {
+            id: '3x3-4',
+            title: 'Ejercicio #4',
+            rows: 3,
+            cols: 3,
+            rowTargets: [6, 8, 5],
+            colTargets: [6, 7, 6],
+            stars: [[1, 4, 5], [5, 3, 5], [1, 4, 1]],
+            solution: [[1, 0, 1], [1, 1, 0], [0, 1, 1]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 6)', 'Columna 1 (suma 6)', 'Fila 2 (suma 8)', 'Fila 3 (suma 5)']
+        },
+        {
+            id: '3x3-5',
+            title: 'Ejercicio #5',
+            rows: 3,
+            cols: 3,
+            rowTargets: [5, 6, 2],
+            colTargets: [2, 6, 5],
+            stars: [[1, 4, 4], [1, 2, 5], [2, 2, 5]],
+            solution: [[1, 1, 0], [1, 0, 1], [0, 1, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 6)', 'Columna 1 (suma 2)', 'Fila 3 (suma 2)', 'Columna 2 (suma 6)', 'Fila 1 (suma 5)']
+        },
+        {
+            id: '3x3-6',
+            title: 'Ejercicio #6',
+            rows: 3,
+            cols: 3,
+            rowTargets: [3, 3, 5],
+            colTargets: [2, 5, 4],
+            stars: [[2, 1, 1], [3, 1, 3], [2, 4, 1]],
+            solution: [[1, 1, 0], [0, 0, 1], [0, 1, 1]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 5)', 'Columna 1 (suma 2)', 'Fila 2 (suma 3)', 'Columna 2 (suma 5)', 'Fila 1 (suma 3)']
+        }
+    ],
+    '3x4': [
+        {
+            id: '3x4-1',
+            title: 'Ejercicio #1 (Puzzle 7 de la Ficha)',
+            rows: 3,
+            cols: 4,
+            rowTargets: [3, 8, 9],
+            colTargets: [3, 5, 5, 7],
+            stars: [[3, 3, 1, 2], [1, 2, 4, 5], [2, 3, 5, 2]],
+            solution: [[0, 1, 0, 0], [1, 1, 0, 1], [1, 0, 1, 1]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 8)', 'Fila 3 (suma 9)', 'Columna 1 (suma 3)', 'Columna 2 (suma 5)', 'Fila 1 (suma 3)']
+        },
+        {
+            id: '3x4-2',
+            title: 'Ejercicio #2',
+            rows: 3,
+            cols: 4,
+            rowTargets: [9, 10, 4],
+            colTargets: [5, 5, 4, 9],
+            stars: [[4, 5, 4, 5], [5, 5, 4, 4], [1, 2, 2, 4]],
+            solution: [[0, 0, 1, 1], [1, 1, 0, 0], [0, 0, 0, 1]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 10)', 'Columna 1 (suma 5)', 'Columna 2 (suma 5)', 'Fila 1 (suma 9)', 'Fila 3 (suma 4)']
+        },
+        {
+            id: '3x4-3',
+            title: 'Ejercicio #3',
+            rows: 3,
+            cols: 4,
+            rowTargets: [6, 2, 6],
+            colTargets: [2, 7, 2, 3],
+            stars: [[4, 2, 1, 3], [2, 2, 1, 3], [2, 5, 1, 2]],
+            solution: [[0, 1, 1, 1], [1, 0, 0, 0], [0, 1, 1, 0]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 6)', 'Columna 1 (suma 2)', 'Fila 1 (suma 6)', 'Fila 2 (suma 2)']
+        },
+        {
+            id: '3x4-4',
+            title: 'Ejercicio #4',
+            rows: 3,
+            cols: 4,
+            rowTargets: [9, 2, 8],
+            colTargets: [10, 3, 3, 3],
+            stars: [[5, 1, 2, 2], [5, 1, 1, 1], [5, 2, 1, 2]],
+            solution: [[1, 0, 1, 1], [0, 1, 0, 1], [1, 1, 1, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 9)', 'Columna 2 (suma 3)', 'Fila 3 (suma 8)', 'Columna 1 (suma 10)', 'Columna 3 (suma 3)', 'Fila 2 (suma 2)']
+        },
+        {
+            id: '3x4-5',
+            title: 'Ejercicio #5',
+            rows: 3,
+            cols: 4,
+            rowTargets: [9, 10, 2],
+            colTargets: [5, 4, 8, 4],
+            stars: [[5, 2, 4, 2], [5, 2, 4, 4], [2, 2, 4, 4]],
+            solution: [[1, 0, 1, 0], [0, 1, 1, 1], [0, 1, 0, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 10)', 'Columna 1 (suma 5)', 'Fila 3 (suma 2)', 'Columna 2 (suma 4)', 'Fila 1 (suma 9)']
+        },
+        {
+            id: '3x4-6',
+            title: 'Ejercicio #6',
+            rows: 3,
+            cols: 4,
+            rowTargets: [3, 1, 9],
+            colTargets: [2, 3, 5, 3],
+            stars: [[1, 3, 5, 3], [1, 1, 3, 3], [2, 2, 5, 1]],
+            solution: [[0, 0, 0, 1], [0, 1, 0, 0], [1, 1, 1, 0]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 9)', 'Columna 1 (suma 2)', 'Fila 2 (suma 1)', 'Columna 2 (suma 3)', 'Fila 1 (suma 3)']
+        }
+    ],
+    '4x4': [
+        {
+            id: '4x4-1',
+            title: 'Ejercicio #1',
+            rows: 4,
+            cols: 4,
+            rowTargets: [6, 8, 8, 6],
+            colTargets: [11, 6, 3, 8],
+            stars: [[5, 3, 2, 3], [5, 3, 4, 3], [2, 2, 1, 5], [4, 3, 2, 4]],
+            solution: [[0, 1, 0, 1], [1, 1, 0, 0], [1, 0, 1, 1], [1, 0, 1, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 6)', 'Columna 1 (suma 11)', 'Fila 3 (suma 8)', 'Fila 4 (suma 6)', 'Columna 2 (suma 6)', 'Fila 2 (suma 8)']
+        },
+        {
+            id: '4x4-2',
+            title: 'Ejercicio #2',
+            rows: 4,
+            cols: 4,
+            rowTargets: [12, 8, 9, 7],
+            colTargets: [8, 7, 7, 14],
+            stars: [[5, 5, 2, 5], [2, 3, 2, 5], [3, 4, 2, 5], [3, 2, 3, 4]],
+            solution: [[1, 0, 1, 1], [0, 1, 0, 1], [1, 1, 1, 0], [0, 0, 1, 1]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 8)', 'Columna 2 (suma 7)', 'Fila 1 (suma 12)', 'Columna 3 (suma 7)', 'Fila 3 (suma 9)', 'Fila 4 (suma 7)']
+        },
+        {
+            id: '4x4-3',
+            title: 'Ejercicio #3',
+            rows: 4,
+            cols: 4,
+            rowTargets: [8, 4, 4, 6],
+            colTargets: [8, 8, 4, 2],
+            stars: [[5, 5, 3, 5], [1, 2, 1, 2], [2, 5, 1, 2], [5, 1, 2, 4]],
+            solution: [[0, 1, 1, 0], [1, 1, 1, 0], [1, 0, 0, 1], [1, 1, 0, 0]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 4)', 'Columna 2 (suma 8)', 'Fila 1 (suma 8)', 'Fila 4 (suma 6)', 'Columna 1 (suma 8)', 'Fila 2 (suma 4)']
+        },
+        {
+            id: '4x4-4',
+            title: 'Ejercicio #4',
+            rows: 4,
+            cols: 4,
+            rowTargets: [1, 2, 6, 10],
+            colTargets: [4, 7, 7, 1],
+            stars: [[1, 4, 2, 1], [2, 1, 2, 4], [4, 5, 2, 1], [3, 2, 5, 4]],
+            solution: [[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1], [1, 1, 1, 0]],
+            startRow: 4,
+            logicalSteps: ['Fila 4 (suma 10)', 'Columna 1 (suma 4)', 'Fila 1 (suma 1)', 'Fila 2 (suma 2)', 'Fila 3 (suma 6)']
+        },
+        {
+            id: '4x4-5',
+            title: 'Ejercicio #5',
+            rows: 4,
+            cols: 4,
+            rowTargets: [9, 2, 8, 4],
+            colTargets: [8, 6, 6, 3],
+            stars: [[2, 5, 3, 1], [2, 1, 1, 2], [4, 1, 3, 5], [4, 5, 3, 1]],
+            solution: [[0, 1, 1, 1], [0, 0, 0, 1], [1, 1, 1, 0], [1, 0, 0, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 9)', 'Columna 1 (suma 8)', 'Fila 3 (suma 8)', 'Fila 4 (suma 4)', 'Columna 2 (suma 6)', 'Fila 2 (suma 2)']
+        },
+        {
+            id: '4x4-6',
+            title: 'Ejercicio #6',
+            rows: 4,
+            cols: 4,
+            rowTargets: [3, 7, 5, 6],
+            colTargets: [7, 4, 9, 1],
+            stars: [[3, 4, 2, 1], [5, 4, 3, 1], [5, 1, 4, 2], [2, 2, 4, 2]],
+            solution: [[0, 0, 1, 1], [0, 1, 1, 0], [1, 0, 0, 0], [1, 0, 1, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 7)', 'Columna 1 (suma 7)', 'Fila 1 (suma 3)', 'Fila 3 (suma 5)', 'Columna 2 (suma 4)', 'Fila 4 (suma 6)']
+        }
+    ],
+    '4x5': [
+        {
+            id: '4x5-1',
+            title: 'Ejercicio #1',
+            rows: 4,
+            cols: 5,
+            rowTargets: [12, 3, 8, 5],
+            colTargets: [6, 5, 4, 10, 3],
+            stars: [[2, 4, 4, 1, 3], [3, 2, 2, 4, 1], [3, 1, 3, 4, 1], [1, 2, 2, 5, 2]],
+            solution: [[0, 1, 1, 1, 1], [1, 0, 0, 0, 0], [1, 1, 0, 1, 0], [0, 0, 0, 1, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 12)', 'Columna 1 (suma 6)', 'Fila 2 (suma 3)', 'Fila 4 (suma 5)', 'Columna 2 (suma 5)', 'Columna 3 (suma 4)', 'Fila 3 (suma 8)']
+        },
+        {
+            id: '4x5-2',
+            title: 'Ejercicio #2',
+            rows: 4,
+            cols: 5,
+            rowTargets: [6, 15, 9, 13],
+            colTargets: [7, 8, 10, 8, 10],
+            stars: [[3, 5, 1, 2, 4], [2, 5, 5, 1, 4], [4, 2, 1, 1, 3], [3, 1, 4, 5, 3]],
+            solution: [[1, 0, 1, 1, 0], [0, 1, 1, 1, 1], [1, 1, 0, 0, 1], [0, 1, 1, 1, 1]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 15)', 'Columna 2 (suma 8)', 'Fila 3 (suma 9)', 'Columna 3 (suma 10)', 'Fila 1 (suma 6)', 'Columna 1 (suma 7)', 'Fila 4 (suma 13)']
+        },
+        {
+            id: '4x5-3',
+            title: 'Ejercicio #3',
+            rows: 4,
+            cols: 5,
+            rowTargets: [9, 4, 12, 9],
+            colTargets: [1, 6, 10, 8, 9],
+            stars: [[2, 1, 3, 3, 2], [1, 2, 4, 1, 5], [1, 3, 3, 4, 2], [3, 5, 4, 5, 5]],
+            solution: [[0, 1, 1, 1, 1], [1, 1, 0, 1, 0], [0, 1, 1, 1, 1], [0, 0, 1, 0, 1]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 12)', 'Columna 1 (suma 1)', 'Fila 1 (suma 9)', 'Fila 2 (suma 4)', 'Columna 2 (suma 6)', 'Columna 3 (suma 10)', 'Columna 4 (suma 8)', 'Fila 4 (suma 9)']
+        },
+        {
+            id: '4x5-4',
+            title: 'Ejercicio #4',
+            rows: 4,
+            cols: 5,
+            rowTargets: [10, 5, 4, 12],
+            colTargets: [9, 6, 11, 4, 1],
+            stars: [[3, 1, 3, 3, 1], [1, 5, 4, 4, 2], [1, 4, 4, 1, 4], [5, 5, 3, 1, 1]],
+            solution: [[1, 1, 1, 1, 0], [1, 0, 1, 0, 0], [0, 0, 1, 0, 0], [1, 1, 0, 1, 1]],
+            startRow: 4,
+            logicalSteps: ['Fila 4 (suma 12)', 'Columna 2 (suma 6)', 'Fila 1 (suma 10)', 'Columna 3 (suma 11)', 'Fila 2 (suma 5)', 'Fila 3 (suma 4)']
+        },
+        {
+            id: '4x5-5',
+            title: 'Ejercicio #5',
+            rows: 4,
+            cols: 5,
+            rowTargets: [6, 5, 5, 3],
+            colTargets: [2, 7, 2, 4, 4],
+            stars: [[3, 5, 1, 4, 4], [2, 5, 1, 1, 2], [2, 3, 1, 3, 2], [3, 2, 2, 1, 2]],
+            solution: [[0, 1, 1, 0, 0], [1, 0, 1, 0, 1], [0, 0, 0, 1, 1], [0, 1, 0, 1, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 6)', 'Columna 2 (suma 7)', 'Fila 4 (suma 3)', 'Columna 4 (suma 4)', 'Fila 2 (suma 5)', 'Columna 1 (suma 2)', 'Fila 3 (suma 5)']
+        },
+        {
+            id: '4x5-6',
+            title: 'Ejercicio #6',
+            rows: 4,
+            cols: 5,
+            rowTargets: [9, 11, 8, 8],
+            colTargets: [9, 11, 6, 4, 6],
+            stars: [[5, 1, 2, 3, 3], [2, 5, 2, 3, 2], [4, 5, 4, 3, 4], [2, 5, 4, 1, 4]],
+            solution: [[1, 1, 0, 1, 0], [1, 1, 1, 0, 1], [0, 0, 1, 0, 1], [1, 1, 0, 1, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 11)', 'Columna 1 (suma 9)', 'Fila 4 (suma 8)', 'Columna 2 (suma 11)', 'Fila 3 (suma 8)', 'Columna 3 (suma 6)', 'Columna 4 (suma 4)', 'Fila 1 (suma 9)']
+        }
+    ],
+    '5x5': [
+        {
+            id: '5x5-1',
+            title: 'Ejercicio #1',
+            rows: 5,
+            cols: 5,
+            rowTargets: [7, 5, 3, 9, 4],
+            colTargets: [7, 6, 10, 3, 2],
+            stars: [[3, 4, 5, 1, 5], [5, 3, 5, 2, 3], [2, 4, 3, 4, 1], [2, 5, 2, 3, 2], [2, 2, 1, 5, 2]],
+            solution: [[1, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 1, 0, 0], [1, 0, 1, 1, 1], [1, 1, 0, 0, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 7)', 'Columna 2 (suma 6)', 'Fila 4 (suma 9)', 'Columna 3 (suma 10)', 'Fila 2 (suma 5)', 'Fila 3 (suma 3)', 'Columna 1 (suma 7)', 'Fila 5 (suma 4)']
+        },
+        {
+            id: '5x5-2',
+            title: 'Ejercicio #2',
+            rows: 5,
+            cols: 5,
+            rowTargets: [7, 13, 6, 7, 4],
+            colTargets: [9, 3, 10, 11, 4],
+            stars: [[4, 3, 1, 3, 1], [5, 2, 3, 4, 1], [1, 3, 3, 1, 2], [4, 4, 5, 4, 3], [3, 5, 4, 4, 1]],
+            solution: [[1, 0, 0, 1, 0], [1, 0, 1, 1, 1], [0, 1, 1, 0, 0], [0, 0, 0, 1, 1], [0, 0, 1, 0, 0]],
+            startRow: 2,
+            logicalSteps: ['Fila 2 (suma 13)', 'Columna 3 (suma 10)', 'Fila 5 (suma 4)', 'Columna 4 (suma 11)', 'Fila 4 (suma 7)', 'Columna 1 (suma 9)', 'Fila 1 (suma 7)', 'Fila 3 (suma 6)']
+        },
+        {
+            id: '5x5-3',
+            title: 'Ejercicio #3',
+            rows: 5,
+            cols: 5,
+            rowTargets: [11, 4, 14, 6, 5],
+            colTargets: [4, 9, 11, 7, 9],
+            stars: [[2, 3, 5, 5, 3], [1, 2, 2, 3, 1], [3, 4, 1, 2, 5], [2, 1, 3, 5, 2], [5, 1, 4, 3, 1]],
+            solution: [[0, 1, 1, 0, 1], [1, 0, 1, 0, 1], [1, 1, 0, 1, 1], [0, 1, 0, 1, 0], [0, 1, 1, 0, 0]],
+            startRow: 3,
+            logicalSteps: ['Fila 3 (suma 14)', 'Columna 1 (suma 4)', 'Columna 3 (suma 11)', 'Fila 1 (suma 11)', 'Fila 2 (suma 4)', 'Fila 4 (suma 6)', 'Columna 2 (suma 9)', 'Fila 5 (suma 5)']
+        },
+        {
+            id: '5x5-4',
+            title: 'Ejercicio #4',
+            rows: 5,
+            cols: 5,
+            rowTargets: [10, 14, 13, 3, 7],
+            colTargets: [12, 9, 12, 9, 5],
+            stars: [[3, 5, 4, 3, 3], [5, 1, 5, 3, 4], [4, 2, 2, 4, 5], [4, 1, 1, 1, 5], [4, 5, 3, 2, 4]],
+            solution: [[1, 0, 1, 1, 0], [1, 1, 1, 1, 0], [1, 1, 1, 0, 1], [0, 1, 1, 1, 0], [0, 1, 0, 1, 0]],
+            startRow: 4,
+            logicalSteps: ['Fila 4 (suma 3)', 'Columna 3 (suma 12)', 'Fila 5 (suma 7)', 'Columna 1 (suma 12)', 'Fila 3 (suma 13)', 'Columna 2 (suma 9)', 'Fila 2 (suma 14)', 'Columna 4 (suma 9)', 'Fila 1 (suma 10)']
+        },
+        {
+            id: '5x5-5',
+            title: 'Ejercicio #5',
+            rows: 5,
+            cols: 5,
+            rowTargets: [13, 9, 8, 10, 11],
+            colTargets: [15, 3, 9, 11, 13],
+            stars: [[5, 1, 3, 4, 1], [2, 1, 1, 3, 4], [5, 1, 3, 3, 1], [4, 5, 3, 1, 3], [4, 1, 3, 1, 5]],
+            solution: [[1, 1, 1, 1, 0], [1, 0, 0, 1, 1], [0, 1, 1, 1, 1], [1, 0, 1, 0, 1], [1, 1, 0, 1, 1]],
+            startRow: 5,
+            logicalSteps: ['Fila 5 (suma 11)', 'Columna 3 (suma 9)', 'Fila 2 (suma 9)', 'Fila 4 (suma 10)', 'Columna 2 (suma 3)', 'Fila 1 (suma 13)', 'Fila 3 (suma 8)']
+        },
+        {
+            id: '5x5-6',
+            title: 'Ejercicio #6',
+            rows: 5,
+            cols: 5,
+            rowTargets: [2, 5, 10, 10, 3],
+            colTargets: [5, 9, 11, 4, 1],
+            stars: [[5, 5, 1, 4, 1], [5, 4, 5, 2, 4], [3, 3, 3, 4, 5], [2, 5, 3, 4, 5], [5, 1, 2, 2, 1]],
+            solution: [[0, 0, 1, 0, 1], [0, 0, 1, 0, 0], [1, 1, 0, 1, 0], [1, 1, 1, 0, 0], [0, 1, 1, 0, 0]],
+            startRow: 1,
+            logicalSteps: ['Fila 1 (suma 2)', 'Columna 5 (suma 1)', 'Fila 4 (suma 10)', 'Columna 1 (suma 5)', 'Fila 2 (suma 5)', 'Columna 2 (suma 9)', 'Fila 3 (suma 10)', 'Columna 3 (suma 11)', 'Fila 5 (suma 3)']
+        }
+    ],
+};
+
+        /* ========================================================================
+           2. CONFIGURACIÓN DE LOS 7 TAMAÑOS Y ESCALADO PARA TV LG (16:9)
+           ------------------------------------------------------------------------
+           Cada tamaño define su nombre pedagógico y el tamaño óptimo de casilla
+           y estrella en unidades `vh` para que quepa siempre sin scroll en la TV.
+           ======================================================================== */
+        const SIZE_KEYS = ['2x2', '3x2', '3x3', '3x4', '4x4', '4x5', '5x5'];
+
+        const SIZE_METADATA = {
+            '2x2': { label: 'Nivel 1 · Calentamiento', cellVh: 15.2, starVh: 3.3 },
+            '3x2': { label: 'Nivel 2 · Explorador',    cellVh: 13.4, starVh: 2.9 },
+            '3x3': { label: 'Nivel 3 · Aventurero',    cellVh: 13.4, starVh: 2.9 },
+            '3x4': { label: 'Nivel 4 · Detective (Ficha)', cellVh: 13.0, starVh: 2.8 },
+            '4x4': { label: 'Nivel 5 · Maestro Lógico', cellVh: 11.2, starVh: 2.45 },
+            '4x5': { label: 'Nivel 6 · Comandante',    cellVh: 10.8, starVh: 2.35 },
+            '5x5': { label: 'Nivel 7 · Leyenda Estelar', cellVh: 9.6, starVh: 2.1 }
+        };
+
+        // Lista de mascotas espaciales para el modo de 1 jugador
+        const PLAYER_AVATARS = ['🚀', '🦊', '🦖', '🦄', '🤖', '🐼', '🐉', '🦉'];
+
+        // Posiciones dentro de una cuadrícula interna 3x3 (índices 0..8) para dibujar
+        // de 1 a 5 estrellas exactamente igual que en la ficha impresa de la foto
+        const STAR_PIP_PATTERNS = {
+            1: [4],                // 1 estrella en el centro
+            2: [2, 6],             // 2 estrellas en diagonal (abajo-izq y arriba-der)
+            3: [1, 6, 8],          // 3 estrellas en triángulo (arriba-centro y base)
+            4: [0, 2, 6, 8],       // 4 estrellas en las 4 esquinas
+            5: [0, 2, 4, 6, 8]     // 5 estrellas (4 esquinas + 1 central)
+        };
+
+        /* ========================================================================
+           3. VARIABLES DE ESTADO GLOBAL DEL JUGADOR Y DE LA PARTIDA
+           ======================================================================== */
+        let selectedSizeKey = '3x4';         // Por defecto mostramos 3x4 (donde está el Puzzle 7 de la foto)
+        let selectedExerciseIndex = 0;       // Índice 0..5 dentro de los 6 ejercicios del tamaño elegido
+        let activePuzzle = null;             // Objeto del ejercicio actualmente en pantalla
+
+        // Matriz de estado de cada casilla del tablero actual:
+        // 'unknown' (sin marcar) | 'selected' (elegida ⭐) | 'discarded' (tachada con 0)
+        let cellStates = [];
+
+        let interactionTool = 'select';      // 'select' = ⭐ Sumar Casilla | 'discard' = 🚫 Descartar (0)
+        let showNumberBadges = false;        // Mostrar o no el numerito (1..5) junto a las estrellas
+        let boardLocked = false;             // Bloquea pulsaciones cuando sale el cartel de victoria
+
+        // Estadísticas de diversión para 1 jugador
+        let playerAvatarIdx = 0;
+        let totalScore = 0;
+        let currentStreak = 1;
+        let currentMistakes = 0;
+
+        // Mapa de progreso guardado en localStorage: { '3x4-1': 3 (estrellas conseguidas 1..3), ... }
+        let completedExercises = {};
+
+        /* ========================================================================
+           4. SISTEMA DE EFECTOS DE SONIDO MUSICALES (WEB AUDIO API)
+           ------------------------------------------------------------------------
+           Genera sonidos alegres directamente en el navegador del televisor LG
+           sin depender de archivos de audio externos.
+           ======================================================================== */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function getAudioContext() {
+            if (!soundEnabled) return null;
+            if (!audioCtx) {
+                const AudioClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioClass) audioCtx = new AudioClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playMusicalTone(freq, duration, wave = 'triangle', delay = 0, volume = 0.2) {
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const start = ctx.currentTime + delay;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = wave;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(volume, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + duration);
+        }
+
+        function playSuccessSound() {
+            playMusicalTone(523.25, 0.11, 'triangle', 0, 0.22);    // Do5
+            playMusicalTone(659.25, 0.13, 'triangle', 0.08, 0.22); // Mi5
+            playMusicalTone(783.99, 0.20, 'triangle', 0.16, 0.24); // Sol5
+        }
+
+        function playDiscardSuccessSound() {
+            playMusicalTone(440.00, 0.10, 'sine', 0, 0.18);        // La4
+            playMusicalTone(587.33, 0.16, 'triangle', 0.08, 0.20); // Re5
+        }
+
+        function playLineCompleteSound() {
+            playMusicalTone(587.33, 0.12, 'triangle', 0, 0.22);
+            playMusicalTone(783.99, 0.14, 'triangle', 0.10, 0.22);
+            playMusicalTone(987.77, 0.24, 'triangle', 0.20, 0.25);
+        }
+
+        function playMistakeSound() {
+            playMusicalTone(230, 0.16, 'sawtooth', 0, 0.16);
+            playMusicalTone(170, 0.28, 'sawtooth', 0.14, 0.18);
+        }
+
+        function playVictoryFanfare() {
+            const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+            notes.forEach((n, i) => playMusicalTone(n, 0.22, 'triangle', i * 0.10, 0.24));
+        }
+
+        function playClickSound() {
+            playMusicalTone(480, 0.06, 'sine', 0, 0.12);
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('btnToggleSound').textContent =
+                soundEnabled ? '🔊 Sonido: SÍ' : '🔇 Sonido: NO';
+            if (soundEnabled) playClickSound();
+        }
+
+        function toggleNumberBadges() {
+            playClickSound();
+            showNumberBadges = !showNumberBadges;
+            document.getElementById('btnToggleNumbers').textContent =
+                showNumberBadges ? '🔢 Números: SÍ' : '🔢 Números: NO';
+            if (activePuzzle) renderStarBoard();
+        }
+
+        /* ========================================================================
+           5. PERSISTENCIA DE PROGRESO Y RANGOS GALÁCTICOS (LOCALSTORAGE)
+           ======================================================================== */
+        function loadSavedProgress() {
+            try {
+                const raw = localStorage.getItem('super_suma_estrellas_tv_v1');
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    completedExercises = data.completedExercises || {};
+                    totalScore = data.totalScore || 0;
+                    playerAvatarIdx = data.playerAvatarIdx || 0;
+                }
+            } catch (e) {
+                completedExercises = {};
+            }
+            updateGlobalHeaderAndRanks();
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem('super_suma_estrellas_tv_v1', JSON.stringify({
+                    completedExercises,
+                    totalScore,
+                    playerAvatarIdx
+                }));
+            } catch (e) {
+                // Ignorar si el navegador de la TV tiene bloqueado el almacenamiento local
+            }
+            updateGlobalHeaderAndRanks();
+        }
+
+        function resetAllProgress() {
+            playClickSound();
+            completedExercises = {};
+            totalScore = 0;
+            saveProgress();
+            renderMenuSelectors();
+        }
+
+        function getPlayerRankTitle(solvedCount) {
+            if (solvedCount >= 42) return '👑 Leyenda del Universo (42/42)';
+            if (solvedCount >= 30) return '🌟 Capitán de Supernovas';
+            if (solvedCount >= 18) return '🔭 Detective de Constelaciones';
+            if (solvedCount >= 6)  return '🛸 Explorador Lunar';
+            return '🚀 Cadete de las Estrellas';
+        }
+
+        function updateGlobalHeaderAndRanks() {
+            const solvedCount = Object.keys(completedExercises).length;
+            const rank = getPlayerRankTitle(solvedCount);
+            const avatar = PLAYER_AVATARS[playerAvatarIdx];
+
+            document.getElementById('headerProgressPill').textContent =
+                `🏆 ${solvedCount} / 42 Ejercicios Resueltos`;
+            document.getElementById('menuRankTitle').textContent = `Rango: ${rank}`;
+            document.getElementById('menuTotalScoreText').textContent = `Puntuación Total: ${totalScore} pts`;
+            document.getElementById('menuAvatarBtn').textContent = avatar;
+
+            document.getElementById('gameAvatarIcon').textContent = avatar;
+            document.getElementById('gameRankLabel').textContent = rank;
+            document.getElementById('gameTotalScore').textContent = totalScore;
+        }
+
+        function cyclePlayerAvatar() {
+            playClickSound();
+            playerAvatarIdx = (playerAvatarIdx + 1) % PLAYER_AVATARS.length;
+            saveProgress();
+        }
+
+        /* ========================================================================
+           6. RENDERIZADO DEL MENÚ PRINCIPAL (SELECTOR DE 7 TAMAÑOS Y 6 EJERCICIOS)
+           ======================================================================== */
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active-screen'));
+            document.getElementById(screenId).classList.add('active-screen');
+        }
+
+        function goToMainMenu() {
+            playClickSound();
+            document.getElementById('headerModePill').textContent = '📐 Elige Tamaño (2x2 a 5x5)';
+            renderMenuSelectors();
+            showScreen('menuScreen');
+        }
+
+        function openTutorialScreen() {
+            playClickSound();
+            document.getElementById('headerModePill').textContent = '🎓 Guía Paso a Paso';
+            showScreen('tutorialScreen');
+        }
+
+        /**
+         * Dibuja en el menú principal las 7 tarjetas de tamaño (2x2 a 5x5)
+         * y las 6 tarjetas de ejercicios correspondientes al tamaño seleccionado.
+         */
+        function renderMenuSelectors() {
+            const sizesContainer = document.getElementById('sizesSelectorGrid');
+            sizesContainer.innerHTML = '';
+
+            SIZE_KEYS.forEach(sizeKey => {
+                const puzzles = PUZZLE_BANK[sizeKey];
+                const doneCount = puzzles.filter(p => completedExercises[p.id]).length;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'size-card-btn' + (sizeKey === selectedSizeKey ? ' selected' : '');
+                btn.innerHTML = `
+                    <div class="size-dim-text">${sizeKey}</div>
+                    <div class="size-diff-label">${SIZE_METADATA[sizeKey].label.split('·')[1].trim()}</div>
+                    <div class="size-progress-pill">${doneCount}/6 ⭐</div>
+                `;
+                btn.onclick = () => {
+                    playClickSound();
+                    selectedSizeKey = sizeKey;
+                    selectedExerciseIndex = 0;
+                    renderMenuSelectors();
+                };
+                sizesContainer.appendChild(btn);
+            });
+
+            // Actualizar subtítulo del tamaño elegido
+            const activeMeta = SIZE_METADATA[selectedSizeKey];
+            document.getElementById('selectedSizeSubtitle').textContent =
+                `Tamaño ${selectedSizeKey} (${activeMeta.label})`;
+            document.getElementById('exercisesSectionTitle').textContent =
+                `2️⃣ Elige uno de los 6 Ejercicios de ${selectedSizeKey}:`;
+
+            // Renderizar las 6 tarjetas de ejercicio de este tamaño
+            const exContainer = document.getElementById('exercisesSelectorGrid');
+            exContainer.innerHTML = '';
+
+            const currentList = PUZZLE_BANK[selectedSizeKey];
+            currentList.forEach((puzzle, idx) => {
+                const earnedStars = completedExercises[puzzle.id] || 0;
+                const starsText = earnedStars > 0 ? '⭐'.repeat(earnedStars) : '☆☆☆';
+                const startRowSum = puzzle.rowTargets[puzzle.startRow - 1];
+
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'exercise-card-btn' +
+                    (idx === selectedExerciseIndex ? ' selected-exercise' : '') +
+                    (earnedStars > 0 ? ' completed-exercise' : '');
+
+                card.innerHTML = `
+                    <div class="ex-top-row">
+                        <span>${puzzle.title}</span>
+                        <span class="ex-stars-earned">${starsText}</span>
+                    </div>
+                    <div class="ex-clue-info">
+                        🔑 Empieza en <strong>Fila ${puzzle.startRow} (suma ${startRowSum})</strong><br>
+                        📐 Cuadrícula de ${puzzle.rows} filas × ${puzzle.cols} columnas
+                    </div>
+                    <div class="ex-play-tag">
+                        ${idx === selectedExerciseIndex ? '▶ Seleccionado (Pulsa para jugar)' : 'Elegir este reto'}
+                    </div>
+                `;
+
+                // Si pulsa una tarjeta ya seleccionada o hace clic, la selecciona y abre el juego directamente
+                card.onclick = () => {
+                    playClickSound();
+                    selectedExerciseIndex = idx;
+                    startSelectedExercise();
+                };
+
+                exContainer.appendChild(card);
+            });
+
+            const chosenPuzzle = currentList[selectedExerciseIndex];
+            document.getElementById('btnStartSelectedExercise').textContent =
+                `🚀 ¡JUGAR ${selectedSizeKey} · ${chosenPuzzle.title.toUpperCase()}!`;
+        }
+
+        /* ========================================================================
+           7. CARGA E INICIALIZACIÓN DE UN EJERCICIO EN LA PANTALLA DE JUEGO
+           ======================================================================== */
+        function startSelectedExercise() {
+            const list = PUZZLE_BANK[selectedSizeKey];
+            activePuzzle = list[selectedExerciseIndex];
+            boardLocked = false;
+            currentStreak = 1;
+            currentMistakes = 0;
+
+            // Ajustar variables CSS dinámicas según el tamaño (2x2 a 5x5) para que encaje perfecto en TV
+            const meta = SIZE_METADATA[selectedSizeKey];
+            document.documentElement.style.setProperty('--cell-size', `${meta.cellVh}vh`);
+            document.documentElement.style.setProperty('--star-size', `${meta.starVh}vh`);
+
+            // Inicializar todas las casillas como 'unknown'
+            cellStates = Array.from({ length: activePuzzle.rows }, () =>
+                Array(activePuzzle.cols).fill('unknown')
+            );
+
+            setInteractionTool('select');
+            document.getElementById('victoryOverlay').classList.remove('show-victory');
+
+            // Actualizar textos de cabecera y barra lateral
+            document.getElementById('headerModePill').textContent =
+                `📐 Jugando Tamaño ${selectedSizeKey} · Ejercicio #${selectedExerciseIndex + 1} de 6`;
+            document.getElementById('activeBoardTitle').textContent =
+                `Tamaño ${selectedSizeKey} · ${activePuzzle.title}`;
+            document.getElementById('startingRowBadge').textContent =
+                `🔑 Pista Inicial: Una fila tiene suma única inequívoca`;
+            document.getElementById('sidebarSizeLabel').textContent =
+                `EJERCICIOS DE ${selectedSizeKey}:`;
+
+            renderQuickExerciseNav();
+            renderStarBoard();
+            updateGameSidebarStats();
+
+            setFeedbackMessage(
+                `🔎 Observa las sumas de las filas a la izquierda. ¡Encuentra primero la FILA que solo puede sumar su número de una única manera!`,
+                'normal'
+            );
+
+            showScreen('gameScreen');
+        }
+
+        function restartCurrentExercise() {
+            playClickSound();
+            startSelectedExercise();
+        }
+
+        function renderQuickExerciseNav() {
+            const nav = document.getElementById('quickExNav');
+            nav.innerHTML = '';
+            const list = PUZZLE_BANK[selectedSizeKey];
+
+            list.forEach((p, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'quick-ex-pill' +
+                    (idx === selectedExerciseIndex ? ' current-pill' : '') +
+                    (completedExercises[p.id] ? ' done-pill' : '');
+                btn.textContent = `#${idx + 1}`;
+                btn.onclick = () => {
+                    playClickSound();
+                    selectedExerciseIndex = idx;
+                    startSelectedExercise();
+                };
+                nav.appendChild(btn);
+            });
+        }
+
+        /* ========================================================================
+           8. RENDERIZADO DEL TABLERO DE ESTRELLAS Y CABECERAS DE SUMA
+           ======================================================================== */
+        function renderStarBoard() {
+            const gridEl = document.getElementById('starPuzzleGrid');
+            gridEl.innerHTML = '';
+
+            const R = activePuzzle.rows;
+            const C = activePuzzle.cols;
+
+            // La cuadrícula visual tiene (R + 1) filas y (C + 1) columnas
+            // porque la primera fila son las sumas de las columnas y la primera columna son las sumas de las filas
+            gridEl.style.gridTemplateColumns = `auto repeat(${C}, auto)`;
+            gridEl.style.gridTemplateRows = `auto repeat(${R}, auto)`;
+
+            // 1. Esquina superior izquierda (indicador Suma)
+            const corner = document.createElement('div');
+            corner.className = 'corner-label-cell';
+            corner.innerHTML = `<span>SUMA</span><span style="font-size:1.3em;">↘️</span>`;
+            gridEl.appendChild(corner);
+
+            // 2. Cabeceras superiores con la suma objetivo de cada COLUMNA
+            for (let c = 0; c < C; c++) {
+                const colTarget = activePuzzle.colTargets[c];
+                const currentSum = getColSelectedSum(c);
+                const unkInCol = getColUnknownCount(c);
+                const isSumReached = (currentSum === colTarget);
+                const isFullyDone = isSumReached && (unkInCol === 0);
+
+                let statusLabel = `Llevas ${currentSum}`;
+                let extraClass = '';
+                if (isFullyDone) {
+                    statusLabel = '✅ ¡Lista!';
+                    extraClass = ' target-complete';
+                } else if (isSumReached) {
+                    statusLabel = `Faltan ${unkInCol} de 0`;
+                    extraClass = ' target-needs-zeros';
+                }
+
+                const colBtn = document.createElement('button');
+                colBtn.type = 'button';
+                colBtn.id = `col-header-${c}`;
+                colBtn.className = 'target-header-btn col-target-btn' + extraClass;
+                colBtn.innerHTML = `
+                    <span class="target-main-num">${colTarget}</span>
+                    <span class="target-sub-progress">${statusLabel}</span>
+                `;
+
+                colBtn.onmouseenter = () => highlightBoardLine('col', c, true);
+                colBtn.onmouseleave = () => highlightBoardLine('col', c, false);
+                colBtn.onclick = () => explainLineStatus('col', c);
+
+                gridEl.appendChild(colBtn);
+            }
+
+            // 3. Filas del tablero: Cabecera de suma de FILA a la izquierda + C casillas de estrellas
+            for (let r = 0; r < R; r++) {
+                const rowTarget = activePuzzle.rowTargets[r];
+                const currentSum = getRowSelectedSum(r);
+                const unkInRow = getRowUnknownCount(r);
+                const isSumReached = (currentSum === rowTarget);
+                const isFullyDone = isSumReached && (unkInRow === 0);
+
+                let statusLabel = `Llevas ${currentSum}`;
+                let extraClass = '';
+                if (isFullyDone) {
+                    statusLabel = '✅ ¡Lista!';
+                    extraClass = ' target-complete';
+                } else if (isSumReached) {
+                    statusLabel = `Faltan ${unkInRow} de 0`;
+                    extraClass = ' target-needs-zeros';
+                }
+
+                // Botón de suma objetivo de la Fila r
+                const rowBtn = document.createElement('button');
+                rowBtn.type = 'button';
+                rowBtn.id = `row-header-${r}`;
+                rowBtn.className = 'target-header-btn row-target-btn' + extraClass;
+                rowBtn.innerHTML = `
+                    <span class="target-main-num">${rowTarget}</span>
+                    <span class="target-sub-progress">${statusLabel}</span>
+                `;
+
+                rowBtn.onmouseenter = () => highlightBoardLine('row', r, true);
+                rowBtn.onmouseleave = () => highlightBoardLine('row', r, false);
+                rowBtn.onclick = () => explainLineStatus('row', r);
+
+                gridEl.appendChild(rowBtn);
+
+                // C casillas con estrellas (1 a 5 estrellas en patrón de dado)
+                for (let c = 0; c < C; c++) {
+                    const starCount = activePuzzle.stars[r][c];
+                    const state = cellStates[r][c];
+
+                    const cellBtn = document.createElement('button');
+                    cellBtn.type = 'button';
+                    cellBtn.id = `cell-${r}-${c}`;
+                    cellBtn.className = 'star-cell-btn' +
+                        (state === 'selected' ? ' cell-selected' : '') +
+                        (state === 'discarded' ? ' cell-discarded' : '');
+                    cellBtn.dataset.row = r;
+                    cellBtn.dataset.col = c;
+
+                    // Contenedor 3x3 de estrellas (igual que la ficha original)
+                    const pipsGrid = document.createElement('div');
+                    pipsGrid.className = 'pips-container';
+                    const activePositions = STAR_PIP_PATTERNS[starCount] || [4];
+
+                    for (let pos = 0; pos < 9; pos++) {
+                        const slot = document.createElement('span');
+                        if (activePositions.includes(pos)) {
+                            slot.className = 'star-pip';
+                            slot.textContent = '⭐';
+                        }
+                        pipsGrid.appendChild(slot);
+                    }
+                    cellBtn.appendChild(pipsGrid);
+
+                    // Si el niño activa "🔢 Números: SÍ", mostramos el número en la esquina superior izquierda
+                    if (showNumberBadges) {
+                        const numBadge = document.createElement('div');
+                        numBadge.className = 'cell-num-badge';
+                        numBadge.textContent = starCount;
+                        cellBtn.appendChild(numBadge);
+                    }
+
+                    // Marca en la esquina inferior derecha ('✅' si suma, o '0' si está descartada como en la foto)
+                    if (state === 'selected') {
+                        const mark = document.createElement('div');
+                        mark.className = 'cell-corner-mark mark-selected';
+                        mark.textContent = '✅';
+                        cellBtn.appendChild(mark);
+                    } else if (state === 'discarded') {
+                        const mark = document.createElement('div');
+                        mark.className = 'cell-corner-mark mark-zero';
+                        mark.textContent = '0';
+                        cellBtn.appendChild(mark);
+                    }
+
+                    cellBtn.onclick = () => onStarCellClick(r, c);
+                    gridEl.appendChild(cellBtn);
+                }
+            }
+        }
+
+        function highlightBoardLine(type, index, active) {
+            const R = activePuzzle.rows;
+            const C = activePuzzle.cols;
+            if (type === 'row') {
+                for (let c = 0; c < C; c++) {
+                    const el = document.getElementById(`cell-${index}-${c}`);
+                    if (el) el.classList.toggle('line-highlight', active);
+                }
+            } else {
+                for (let r = 0; r < R; r++) {
+                    const el = document.getElementById(`cell-${r}-${index}`);
+                    if (el) el.classList.toggle('line-highlight', active);
+                }
+            }
+        }
+
+        /* ========================================================================
+           9. LÓGICA DE INTERACCIÓN AL PULSAR UNA CASILLA (SUMAR O MARCAR '0')
+           ------------------------------------------------------------------------
+           REGLA CLAVE PARA GANAR:
+           El jugador debe marcar TANTO las casillas que forman parte de la suma
+           (usando "⭐ Sumar Casilla (Sí Vale)") COMO todas las casillas incorrectas
+           que no forman parte de la suma (usando "🚫 Marcar Incorrecta (No Vale · 0)").
+           Ninguna casilla se marca sola: todas deben ser deducidas y marcadas por el niño.
+           ======================================================================== */
+        function setInteractionTool(tool) {
+            playClickSound();
+            interactionTool = tool;
+            document.getElementById('btnToolSelect').classList.toggle('active-select-tool', tool === 'select');
+            document.getElementById('btnToolDiscard').classList.toggle('active-discard-tool', tool === 'discard');
+        }
+
+        function flashWrongCellAttempt(r, c) {
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+            if (!cellEl) return;
+            cellEl.classList.remove('cell-error-shake');
+            void cellEl.offsetWidth;
+            cellEl.classList.add('cell-error-shake');
+        }
+
+        function onStarCellClick(r, c) {
+            if (boardLocked) return;
+
+            const currentState = cellStates[r][c];
+            if (currentState !== 'unknown') {
+                setFeedbackMessage('ℹ️ Esa casilla ya está marcada. ¡Elige otra casilla blanca que falte por resolver!', 'normal');
+                return;
+            }
+
+            const starVal = activePuzzle.stars[r][c];
+            const isPartOfSolution = (activePuzzle.solution[r][c] === 1);
+
+            if (interactionTool === 'select') {
+                // El jugador usa "⭐ Sumar Casilla (Sí Vale)"
+                if (isPartOfSolution) {
+                    cellStates[r][c] = 'selected';
+                    const pts = 100 * currentStreak;
+                    totalScore += pts;
+                    currentStreak = Math.min(currentStreak + 1, 5);
+                    playSuccessSound();
+
+                    renderStarBoard();
+                    saveProgress();
+                    updateGameSidebarStats();
+
+                    // Comprobar si ya se marcaron TODAS las correctas y TODAS las incorrectas (0)
+                    if (checkIfBoardSolved()) {
+                        handleExerciseVictory();
+                        return;
+                    }
+
+                    const remValid = getRemainingSolutionCellsCount();
+                    const remZeros = getRemainingZeroCellsCount();
+                    const rowReached = (getRowSelectedSum(r) === activePuzzle.rowTargets[r]) && (getRowUnknownCount(r) > 0);
+                    const colReached = (getColSelectedSum(c) === activePuzzle.colTargets[c]) && (getColUnknownCount(c) > 0);
+
+                    if (remValid === 0 && remZeros > 0) {
+                        playLineCompleteSound();
+                        setFeedbackMessage(
+                            `🎯 ¡Ya tienes todas las casillas que suman! Ahora cambia a "🚫 Marcar Incorrecta (No Vale · 0)" y marca las ${remZeros} casilla(s) incorrecta(s) para ganar.`,
+                            'hint'
+                        );
+                    } else if (rowReached || colReached) {
+                        playLineCompleteSound();
+                        setFeedbackMessage(
+                            `🌟 ¡Muy bien (+${pts} pts)! Ya alcanzaste la suma de esa línea: recuerda cambiar a "🚫 Marcar Incorrecta (0)" para tachar las casillas que sobran.`,
+                            'good'
+                        );
+                    } else {
+                        setFeedbackMessage(
+                            `🌟 ¡Acierto! Esa casilla de ${starVal} ⭐ sí forma parte de la suma (+${pts} pts).`,
+                            'good'
+                        );
+                    }
+                } else {
+                    // Se equivocó: intentó sumar una casilla que es INCORRECTA (0).
+                    // NO se la marcamos automáticamente para que tenga que cambiar de herramienta y marcarla como incorrecta (0).
+                    playMistakeSound();
+                    currentMistakes++;
+                    currentStreak = 1;
+                    updateGameSidebarStats();
+                    flashWrongCellAttempt(r, c);
+
+                    setFeedbackMessage(
+                        `❌ ¡Ups! Esa casilla de ${starVal} ⭐ NO entra en la suma. Usa la herramienta "🚫 Marcar Incorrecta (No Vale · 0)" para marcarla con un 0.`,
+                        'bad'
+                    );
+                }
+            } else {
+                // El jugador usa "🚫 Marcar Incorrecta (No Vale · 0)"
+                if (!isPartOfSolution) {
+                    cellStates[r][c] = 'discarded';
+                    const pts = 100 * currentStreak;
+                    totalScore += pts;
+                    currentStreak = Math.min(currentStreak + 1, 5);
+                    playDiscardSuccessSound();
+
+                    renderStarBoard();
+                    saveProgress();
+                    updateGameSidebarStats();
+
+                    // Comprobar si ya se marcaron TODAS las correctas y TODAS las incorrectas (0)
+                    if (checkIfBoardSolved()) {
+                        handleExerciseVictory();
+                        return;
+                    }
+
+                    const remValid = getRemainingSolutionCellsCount();
+                    const remZeros = getRemainingZeroCellsCount();
+
+                    if (remZeros === 0 && remValid > 0) {
+                        playLineCompleteSound();
+                        setFeedbackMessage(
+                            `🎯 ¡Ya marcaste todas las incorrectas con 0! Ahora usa "⭐ Sumar Casilla (Sí Vale)" en las ${remValid} casilla(s) que faltan para ganar.`,
+                            'hint'
+                        );
+                    } else {
+                        setFeedbackMessage(
+                            `🚫 ¡Bien visto! Marcaste esa casilla de ${starVal} ⭐ como incorrecta (0) (+${pts} pts).`,
+                            'good'
+                        );
+                    }
+                } else {
+                    // Se equivocó: intentó marcar con 0 una casilla que SÍ forma parte de la suma.
+                    playMistakeSound();
+                    currentMistakes++;
+                    currentStreak = 1;
+                    updateGameSidebarStats();
+                    flashWrongCellAttempt(r, c);
+
+                    setFeedbackMessage(
+                        `⚠️ ¡Espera! Esa casilla de ${starVal} ⭐ SÍ es necesaria para la suma. Cambia a "⭐ Sumar Casilla (Sí Vale)" para marcarla.`,
+                        'bad'
+                    );
+                }
+            }
+        }
+
+        function getRowSelectedSum(r) {
+            let sum = 0;
+            for (let c = 0; c < activePuzzle.cols; c++) {
+                if (cellStates[r][c] === 'selected') {
+                    sum += activePuzzle.stars[r][c];
+                }
+            }
+            return sum;
+        }
+
+        function getColSelectedSum(c) {
+            let sum = 0;
+            for (let r = 0; r < activePuzzle.rows; r++) {
+                if (cellStates[r][c] === 'selected') {
+                    sum += activePuzzle.stars[r][c];
+                }
+            }
+            return sum;
+        }
+
+        function getRowUnknownCount(r) {
+            let count = 0;
+            for (let c = 0; c < activePuzzle.cols; c++) {
+                if (cellStates[r][c] === 'unknown') count++;
+            }
+            return count;
+        }
+
+        function getColUnknownCount(c) {
+            let count = 0;
+            for (let r = 0; r < activePuzzle.rows; r++) {
+                if (cellStates[r][c] === 'unknown') count++;
+            }
+            return count;
+        }
+
+        function getRemainingSolutionCellsCount() {
+            let rem = 0;
+            for (let r = 0; r < activePuzzle.rows; r++) {
+                for (let c = 0; c < activePuzzle.cols; c++) {
+                    if (activePuzzle.solution[r][c] === 1 && cellStates[r][c] !== 'selected') {
+                        rem++;
+                    }
+                }
+            }
+            return rem;
+        }
+
+        function getRemainingZeroCellsCount() {
+            let rem = 0;
+            for (let r = 0; r < activePuzzle.rows; r++) {
+                for (let c = 0; c < activePuzzle.cols; c++) {
+                    if (activePuzzle.solution[r][c] === 0 && cellStates[r][c] !== 'discarded') {
+                        rem++;
+                    }
+                }
+            }
+            return rem;
+        }
+
+        /**
+         * Para ganar el ejercicio es obligatorio haber marcado TANTO todas las
+         * casillas correctas ('selected') COMO todas las incorrectas ('discarded' con 0).
+         */
+        function checkIfBoardSolved() {
+            return getRemainingSolutionCellsCount() === 0 && getRemainingZeroCellsCount() === 0;
+        }
+
+        /* ========================================================================
+           10. DETECTOR INTELIGENTE DE LA FILA O COLUMNA INEQUÍVOCA (PISTA LÓGICA)
+           ------------------------------------------------------------------------
+           Analiza en tiempo real todas las filas y columnas que aún tienen casillas
+           sin resolver y calcula cuántos subconjuntos de sus casillas libres suman
+           el objetivo restante.
+           - Si una línea ya alcanzó su suma pero le faltan casillas por marcar con 0,
+             avisa al niño de que debe marcarlas con "🚫 Marcar Incorrecta (0)".
+           - Cuando encuentra la fila o columna con EXACTAMENTE 1 combinación posible,
+             la ilumina en dorado y le explica qué casillas sumar y cuáles marcar con 0.
+           ======================================================================== */
+        function findSubsetsForTarget(values, targetSum) {
+            const validMasks = [];
+            const n = values.length;
+            const totalMasks = 1 << n;
+
+            for (let mask = 0; mask < totalMasks; mask++) {
+                let s = 0;
+                for (let i = 0; i < n; i++) {
+                    if ((mask >> i) & 1) s += values[i];
+                }
+                if (s === targetSum) {
+                    validMasks.push(mask);
+                }
+            }
+            return validMasks;
+        }
+
+        function giveUnequivocalHint() {
+            if (boardLocked || !activePuzzle) return;
+            playClickSound();
+
+            // Limpiar brillos de pista anteriores
+            document.querySelectorAll('.target-header-btn').forEach(b => b.classList.remove('target-hint-glow'));
+            document.querySelectorAll('.star-cell-btn').forEach(b => b.classList.remove('hint-cell-glow'));
+
+            const R = activePuzzle.rows;
+            const C = activePuzzle.cols;
+
+            // 1. Buscar primero una FILA que tenga exactamente 1 combinación posible en sus casillas libres
+            for (let r = 0; r < R; r++) {
+                const unknownCols = [];
+                for (let c = 0; c < C; c++) {
+                    if (cellStates[r][c] === 'unknown') unknownCols.push(c);
+                }
+                if (unknownCols.length === 0) continue;
+
+                const remTarget = activePuzzle.rowTargets[r] - getRowSelectedSum(r);
+                const unknownVals = unknownCols.map(c => activePuzzle.stars[r][c]);
+                const masks = findSubsetsForTarget(unknownVals, remTarget);
+
+                if (masks.length === 1) {
+                    const mask = masks[0];
+                    const chosenVals = [];
+                    const zeroVals = [];
+                    unknownCols.forEach((c, idx) => {
+                        const cellEl = document.getElementById(`cell-${r}-${c}`);
+                        if (cellEl) cellEl.classList.add('hint-cell-glow');
+                        if ((mask >> idx) & 1) {
+                            chosenVals.push(activePuzzle.stars[r][c]);
+                        } else {
+                            zeroVals.push(activePuzzle.stars[r][c]);
+                        }
+                    });
+
+                    const headerEl = document.getElementById(`row-header-${r}`);
+                    if (headerEl) headerEl.classList.add('target-hint-glow');
+
+                    if (remTarget === 0) {
+                        setFeedbackMessage(
+                            `💡 ¡PISTA EN FILA ${r + 1}! Ya tienes la suma completa (${activePuzzle.rowTargets[r]}), pero para seguir o ganar debes marcar sus casillas sobrantes [${zeroVals.join(', ')}] con "🚫 Marcar Incorrecta (No Vale · 0)".`,
+                            'hint'
+                        );
+                        return;
+                    }
+
+                    const sumFormula = chosenVals.join(' + ');
+                    const discardText = zeroVals.length > 0
+                        ? ` y marca como incorrectas (0): [${zeroVals.join(', ')}]`
+                        : '';
+
+                    setFeedbackMessage(
+                        `💡 ¡FILA INEQUÍVOCA! Mira la Fila ${r + 1} (suma ${activePuzzle.rowTargets[r]}): con las casillas libres [${unknownVals.join(', ')}], ¡la ÚNICA forma de sumar ${remTarget} es ${sumFormula} = ${remTarget}! Elige [${chosenVals.join(', ')}] con ⭐${discardText}.`,
+                        'hint'
+                    );
+                    return;
+                }
+            }
+
+            // 2. Buscar qué COLUMNA tiene ahora suma única inequívoca
+            for (let c = 0; c < C; c++) {
+                const unknownRows = [];
+                for (let r = 0; r < R; r++) {
+                    if (cellStates[r][c] === 'unknown') unknownRows.push(r);
+                }
+                if (unknownRows.length === 0) continue;
+
+                const remTarget = activePuzzle.colTargets[c] - getColSelectedSum(c);
+                const unknownVals = unknownRows.map(r => activePuzzle.stars[r][c]);
+                const masks = findSubsetsForTarget(unknownVals, remTarget);
+
+                if (masks.length === 1) {
+                    const mask = masks[0];
+                    const chosenVals = [];
+                    const zeroVals = [];
+                    unknownRows.forEach((r, idx) => {
+                        const cellEl = document.getElementById(`cell-${r}-${c}`);
+                        if (cellEl) cellEl.classList.add('hint-cell-glow');
+                        if ((mask >> idx) & 1) {
+                            chosenVals.push(activePuzzle.stars[r][c]);
+                        } else {
+                            zeroVals.push(activePuzzle.stars[r][c]);
+                        }
+                    });
+
+                    const headerEl = document.getElementById(`col-header-${c}`);
+                    if (headerEl) headerEl.classList.add('target-hint-glow');
+
+                    if (remTarget === 0) {
+                        setFeedbackMessage(
+                            `💡 ¡PISTA EN COLUMNA ${c + 1}! Ya tienes la suma completa (${activePuzzle.colTargets[c]}), pero debes marcar sus casillas sobrantes [${zeroVals.join(', ')}] con "🚫 Marcar Incorrecta (No Vale · 0)".`,
+                            'hint'
+                        );
+                        return;
+                    }
+
+                    const sumFormula = chosenVals.join(' + ');
+                    const discardText = zeroVals.length > 0
+                        ? ` y marca como incorrectas (0): [${zeroVals.join(', ')}]`
+                        : '';
+
+                    setFeedbackMessage(
+                        `💡 ¡COLUMNA INEQUÍVOCA! Gracias a lo que ya hiciste, en la Columna ${c + 1} (suma ${activePuzzle.colTargets[c]}) quedan libres [${unknownVals.join(', ')}] para sumar ${remTarget}. ¡Solo vale ${sumFormula} = ${remTarget}! Elige [${chosenVals.join(', ')}] con ⭐${discardText}.`,
+                        'hint'
+                    );
+                    return;
+                }
+            }
+        }
+
+        /**
+         * Cuando el niño pulsa el número de una Fila o Columna, le informa de cuántas
+         * combinaciones posibles tiene esa línea o si le falta marcar con 0 las sobrantes.
+         */
+        function explainLineStatus(type, idx) {
+            if (boardLocked || !activePuzzle) return;
+            playClickSound();
+
+            if (type === 'row') {
+                const target = activePuzzle.rowTargets[idx];
+                const current = getRowSelectedSum(idx);
+                const needed = target - current;
+                const unkCount = getRowUnknownCount(idx);
+                if (needed === 0 && unkCount === 0) {
+                    setFeedbackMessage(`✅ La Fila ${idx + 1} (suma ${target}) ya tiene todas sus casillas correctas (✅) e incorrectas (0) marcadas.`, 'good');
+                    return;
+                }
+                if (needed === 0 && unkCount > 0) {
+                    setFeedbackMessage(`🚫 La Fila ${idx + 1} ya suma ${target}, pero te falta marcar con "🚫 Marcar Incorrecta (0)" sus ${unkCount} casilla(s) sobrante(s).`, 'hint');
+                    return;
+                }
+                const unkVals = [];
+                for (let c = 0; c < activePuzzle.cols; c++) {
+                    if (cellStates[idx][c] === 'unknown') unkVals.push(activePuzzle.stars[idx][c]);
+                }
+                const ways = findSubsetsForTarget(unkVals, needed).length;
+                if (ways === 1) {
+                    setFeedbackMessage(
+                        `🔑 ¡Bingo! La Fila ${idx + 1} necesita sumar ${needed} entre [${unkVals.join(', ')}] y tiene SOLO 1 combinación posible. ¡Marca las que valen y las incorrectas (0)!`,
+                        'hint'
+                    );
+                } else {
+                    setFeedbackMessage(
+                        `🔍 La Fila ${idx + 1} necesita sumar ${needed} entre [${unkVals.join(', ')}], pero ahora mismo hay ${ways} combinaciones posibles. ¡Busca otra fila o columna que tenga solo 1!`,
+                        'normal'
+                    );
+                }
+            } else {
+                const target = activePuzzle.colTargets[idx];
+                const current = getColSelectedSum(idx);
+                const needed = target - current;
+                const unkCount = getColUnknownCount(idx);
+                if (needed === 0 && unkCount === 0) {
+                    setFeedbackMessage(`✅ La Columna ${idx + 1} (suma ${target}) ya tiene todas sus casillas correctas (✅) e incorrectas (0) marcadas.`, 'good');
+                    return;
+                }
+                if (needed === 0 && unkCount > 0) {
+                    setFeedbackMessage(`🚫 La Columna ${idx + 1} ya suma ${target}, pero te falta marcar con "🚫 Marcar Incorrecta (0)" sus ${unkCount} casilla(s) sobrante(s).`, 'hint');
+                    return;
+                }
+                const unkVals = [];
+                for (let r = 0; r < activePuzzle.rows; r++) {
+                    if (cellStates[r][idx] === 'unknown') unkVals.push(activePuzzle.stars[r][idx]);
+                }
+                const ways = findSubsetsForTarget(unkVals, needed).length;
+                if (ways === 1) {
+                    setFeedbackMessage(
+                        `🔑 ¡Exacto! La Columna ${idx + 1} necesita sumar ${needed} entre [${unkVals.join(', ')}] y ya tiene SOLO 1 combinación posible.`,
+                        'hint'
+                    );
+                } else {
+                    setFeedbackMessage(
+                        `🔍 La Columna ${idx + 1} necesita sumar ${needed} entre [${unkVals.join(', ')}], pero aún tiene ${ways} combinaciones posibles. ¡Empieza por la fila inequívoca!`,
+                        'normal'
+                    );
+                }
+            }
+        }
+
+        /* ========================================================================
+           11. FINALIZACIÓN DEL EJERCICIO, MEDALLAS Y PASO AL SIGUIENTE RETO
+           ======================================================================== */
+        function handleExerciseVictory() {
+            boardLocked = true;
+            renderStarBoard();
+            playVictoryFanfare();
+
+            // Calcular estrellas ganadas (3 estrellas sin fallos, 2 con 1 fallo, 1 con 2+ fallos)
+            let starsEarned = 3;
+            let bonusPts = 150;
+            if (currentMistakes === 1) {
+                starsEarned = 2;
+                bonusPts = 75;
+            } else if (currentMistakes >= 2) {
+                starsEarned = 1;
+                bonusPts = 25;
+            }
+
+            totalScore += bonusPts;
+            const prevBest = completedExercises[activePuzzle.id] || 0;
+            if (starsEarned > prevBest) {
+                completedExercises[activePuzzle.id] = starsEarned;
+            }
+
+            saveProgress();
+            renderQuickExerciseNav();
+            updateGameSidebarStats();
+
+            // Mostrar pantalla emergente de victoria con el camino lógico que construyó el puzzle
+            document.getElementById('victoryStarsDisplay').textContent = '⭐'.repeat(starsEarned);
+            document.getElementById('victoryTitle').textContent =
+                `🎉 ¡${activePuzzle.title.toUpperCase()} SUPERADO!`;
+            document.getElementById('victorySummaryText').textContent =
+                currentMistakes === 0
+                    ? `¡Perfecto! Has marcado todas las correctas (✅) y todas las incorrectas (0) sin fallos (+${bonusPts} pts).`
+                    : `Completado con ${currentMistakes} fallo(s). Bonus: +${bonusPts} puntos.`;
+
+            document.getElementById('victoryStepsChain').innerHTML = `
+                <strong>🧭 Cadena Lógica Inequívoca de este Puzzle:</strong><br>
+                ${activePuzzle.logicalSteps.join(' ➔ ')}
+            `;
+
+            const nextBtn = document.getElementById('btnNextExercise');
+            if (selectedExerciseIndex < 5) {
+                nextBtn.textContent = `➡️ Siguiente Ejercicio (#${selectedExerciseIndex + 2} de ${selectedSizeKey})`;
+            } else {
+                const currentSizePos = SIZE_KEYS.indexOf(selectedSizeKey);
+                if (currentSizePos < SIZE_KEYS.length - 1) {
+                    const nextSize = SIZE_KEYS[currentSizePos + 1];
+                    nextBtn.textContent = `🚀 ¡Pasar al Nivel ${nextSize}!`;
+                } else {
+                    nextBtn.textContent = `🏆 ¡Volver al Menú de Campeones!`;
+                }
+            }
+
+            document.getElementById('victoryOverlay').classList.add('show-victory');
+        }
+
+        function goToNextExercise() {
+            playClickSound();
+            if (selectedExerciseIndex < 5) {
+                selectedExerciseIndex++;
+                startSelectedExercise();
+            } else {
+                const currentSizePos = SIZE_KEYS.indexOf(selectedSizeKey);
+                if (currentSizePos < SIZE_KEYS.length - 1) {
+                    selectedSizeKey = SIZE_KEYS[currentSizePos + 1];
+                    selectedExerciseIndex = 0;
+                    startSelectedExercise();
+                } else {
+                    goToMainMenu();
+                }
+            }
+        }
+
+        /* ========================================================================
+           12. ACTUALIZACIÓN DE ESTADÍSTICAS Y MENSAJES EN PANTALLA
+           ======================================================================== */
+        function updateGameSidebarStats() {
+            document.getElementById('gameTotalScore').textContent = totalScore;
+            document.getElementById('statStreak').textContent = `x${currentStreak} 🔥`;
+            document.getElementById('statMistakes').textContent = currentMistakes;
+            document.getElementById('statMistakes').style.color =
+                currentMistakes === 0 ? '#86efac' : '#fca5a5';
+            const remValid = getRemainingSolutionCellsCount();
+            const remZeros = getRemainingZeroCellsCount();
+            document.getElementById('statRemaining').textContent =
+                `${remValid}✅ · ${remZeros}🚫`;
+        }
+
+        function setFeedbackMessage(msg, type = 'normal') {
+            const bar = document.getElementById('feedbackBar');
+            bar.classList.remove('fb-good', 'fb-bad', 'fb-hint');
+            if (type === 'good') bar.classList.add('fb-good');
+            if (type === 'bad')  bar.classList.add('fb-bad');
+            if (type === 'hint') bar.classList.add('fb-hint');
+            document.getElementById('feedbackMessage').textContent = msg;
+        }
+
+        // Inicializar la aplicación al cargar la página en la Smart TV LG
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedProgress();
+            renderMenuSelectors();
+        });
+    </script>
+</body>
+</html>
